@@ -1,0 +1,12 @@
+rules_version = '2';
+
+// Deny-all: nenhum cliente (web/mobile) acessa o Firestore diretamente.
+// Toda leitura/escrita passa pela API Nest, que usa o Firebase Admin SDK
+// (o Admin SDK ignora estas regras, então isso não bloqueia o backend).
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

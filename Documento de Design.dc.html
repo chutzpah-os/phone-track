@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="./doc-page.js"></script>
+  <style>
+    doc-page:not(:defined) { visibility: hidden; }
+    body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    a { color: #111111; }
+    a:hover { color: #8a6e00; }
+    h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+    p, li { font-size: 15px; line-height: 1.65; color: #2b2b2b; orphans: 3; widows: 3; }
+    .swatch-row { break-inside: avoid; }
+    .card { break-inside: avoid; }
+  </style>
+</helmet>
+<doc-page size="letter" margin="0.75in">
+
+  <div style="font-size:12px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;color:#8a7a00;margin-bottom:6px">Documento de Design</div>
+  <h1 style="font-size:32px;font-weight:800;color:#111111;margin:0 0 4px">Sistema de Conferência Diária de Aparelhos</h1>
+  <div style="font-size:14px;color:rgba(17,17,17,0.55);margin-bottom:28px">Protótipo mobile · Staff · v1.0 · 30/07/2026</div>
+
+  <h2 style="font-size:19px;font-weight:800;color:#111111;border-bottom:2px solid #111111;padding-bottom:6px;margin-top:32px">1. Visão geral</h2>
+  <p>O protótipo digitaliza a conferência diária de aparelhos hoje feita em caderno físico, replicando o fluxo já consolidado da equipe: uma <strong>Primeira Contagem</strong> na abertura da loja e uma <strong>Contagem Final</strong> no fechamento, com um <strong>Resumo do Dia</strong> calculado automaticamente. O ponto de vista é o do <strong>Staff (funcionário)</strong>, em formato de <strong>celular</strong> — o dispositivo usado no balcão da loja.</p>
+  <p>Quatro áreas compõem o app: <strong>Lista de Aparelhos</strong> (cadastro e consulta), <strong>Primeira Contagem</strong>, <strong>Contagem Final</strong> e <strong>Resumo do Dia</strong>, acessadas por uma barra de navegação inferior fixa.</p>
+
+  <h2 style="font-size:19px;font-weight:800;color:#111111;border-bottom:2px solid #111111;padding-bottom:6px;margin-top:32px">2. Paleta e tipografia</h2>
+  <p>Paleta reduzida a três cores, para máxima legibilidade em uso rápido de balcão: <strong>branco</strong> como fundo, <strong>preto</strong> como cor de texto e elementos primários, <strong>amarelo</strong> como cor de destaque (ações confirmadas, seleção ativa, texto sobre preto).</p>
+  <div class="swatch-row" style="display:flex;gap:14px;margin:18px 0">
+    <div style="text-align:center">
+      <div style="width:64px;height:64px;border-radius:12px;background:#FFFFFF;border:1.5px solid rgba(17,17,17,0.15)"></div>
+      <div style="font-size:11px;font-weight:700;color:#111111;margin-top:6px">Branco</div>
+      <div style="font-size:10.5px;color:rgba(17,17,17,0.5)">#FFFFFF · fundo</div>
+    </div>
+    <div style="text-align:center">
+      <div style="width:64px;height:64px;border-radius:12px;background:#111111"></div>
+      <div style="font-size:11px;font-weight:700;color:#111111;margin-top:6px">Preto</div>
+      <div style="font-size:10.5px;color:rgba(17,17,17,0.5)">#111111 · texto/primário</div>
+    </div>
+    <div style="text-align:center">
+      <div style="width:64px;height:64px;border-radius:12px;background:#F6C500"></div>
+      <div style="font-size:11px;font-weight:700;color:#111111;margin-top:6px">Amarelo</div>
+      <div style="font-size:10.5px;color:rgba(17,17,17,0.5)">#F6C500 · destaque</div>
+    </div>
+  </div>
+  <p>Tons neutros intermediários (cinzas) são obtidos apenas por opacidade do preto (ex: <code>rgba(17,17,17,0.55)</code> para texto secundário, <code>rgba(17,17,17,0.08)</code> para bordas) — nenhuma cor nova é introduzida. Tipografia: <strong>Plus Jakarta Sans</strong>, pesos 400 a 800, para uma leitura amigável e rápida em tela touch.</p>
+
+  <h2 style="font-size:19px;font-weight:800;color:#111111;border-bottom:2px solid #111111;padding-bottom:6px;margin-top:32px">3. Dimensões e grid</h2>
+  <p>Protótipo desenhado sobre uma moldura de iPhone de <strong>402 × 874px</strong> (proporção de tela real), mobile-first. Estrutura vertical fixa:</p>
+  <ul>
+    <li><strong>Status bar</strong> (relógio/sinal/bateria): sobreposta, 54px de altura reservada no topo do conteúdo.</li>
+    <li><strong>Área de conteúdo</strong>: rolagem vertical livre, ocupa todo o espaço restante entre status bar e barra de navegação.</li>
+    <li><strong>Barra de navegação inferior</strong>: 4 abas, padding 8px laterais/superior + 22px inferior (+ home indicator da moldura), altura efetiva ≈ 78px.</li>
+  </ul>
+  <p>Escala de espaçamento usada em todo o app: <strong>6 · 8 · 10 · 12 · 14 · 16 · 20px</strong> (paddings/gaps) — praticamente nenhum valor fora dessa escala. Raio de canto: 10–12px em botões e chips pequenos, 14–16px em cards, 18px em cards de destaque/modais, 24px no topo da folha (bottom sheet) e 999px (pill) em selos, chips e círculos de status.</p>
+  <p>Tipografia por elemento: título de tela 22–26px/800; subtítulo 13–14px/400 a 55% de opacidade; nome do aparelho 14.5–15px/600; texto secundário (marca/modelo) 12–12.5px; rótulos de categoria e status 11–13px/700; botões primários 13.5–14.5px/700. Nenhum texto abaixo de 10.5px (contadores de rodapé de tab).</p>
+  <p>Alvos de toque: linhas de lista e itens de checklist têm no mínimo 44–52px de altura; botões de status em grid 2 colunas com padding vertical de 9px resultam em ≈ 40px de altura por botão — dentro do mínimo recomendado para uso touch no balcão.</p>
+
+  <h2 style="font-size:19px;font-weight:800;color:#111111;border-bottom:2px solid #111111;padding-bottom:6px;margin-top:32px">4. Componentes de UI</h2>
+  <ul>
+    <li><strong>Botão primário</strong> (Finalizar, Adicionar, Confirmar/Continuar): fundo preto, texto amarelo, sem borda, raio 11–14px, padding 11–15px.</li>
+    <li><strong>Botão secundário</strong> (Cancelar): fundo branco, borda preta 1.5px, texto preto.</li>
+    <li><strong>Chip de filtro/contador</strong>: padding 7–8px × 12–14px, raio pill (999px); ativo = fundo preto/texto amarelo ou branco; inativo = fundo branco/borda preta 15% opacidade.</li>
+    <li><strong>Selo de categoria</strong>: padding 3–4px × 9–10px, raio pill, com as três variações preto/amarelo/contorno descritas na seção 2.</li>
+    <li><strong>Card de aparelho</strong>: fundo branco, borda 1.5px preta a 8% de opacidade, raio 14–16px, padding 12–14px.</li>
+    <li><strong>Indicador de status (checklist)</strong>: círculo 26×26px, borda 2px; vazio = borda preta a 20%/fundo branco; preenchido = fundo preto com ✓ amarelo.</li>
+    <li><strong>Grid de especificação</strong>: 2 colunas × 4 linhas (8 opções de status), gap 6px, sem rolagem — substitui a antiga barra de rolagem horizontal.</li>
+    <li><strong>Campo de texto</strong> (busca, observação "Outro", formulário): borda 1.5px preta a 12% de opacidade, raio 10–14px, fundo branco (ou cinza claro para "Outro").</li>
+    <li><strong>Modal de confirmação</strong>: cartão branco centralizado, largura máx. 280px, raio 18px, padding 20px, com os dois botões primário/secundário lado a lado.</li>
+    <li><strong>Bottom sheet</strong> (ficha do aparelho): ocupa até 80% da altura da tela, raio 24px apenas no topo, "puxador" de 36×4px centralizado.</li>
+    <li><strong>Slot de foto</strong> (cadastro): área de 140px de altura, arrastar-e-soltar, cantos arredondados 14px.</li>
+  </ul>
+
+  <h2 style="font-size:19px;font-weight:800;color:#111111;border-bottom:2px solid #111111;padding-bottom:6px;margin-top:32px">5. Iconografia</h2>
+  <p>Todos os ícones são desenhados em SVG inline, 22×22px, <code>fill="none"</code>, cor herdada via <code>currentColor</code> (preto quando ativo, <code>rgba(17,17,17,0.35)</code> quando inativo) — nenhum ícone de terceiros ou fonte de ícones é usado.</p>
+  <ul>
+    <li><strong>Lista</strong> (aba): três retângulos horizontais empilhados, <code>viewBox="0 0 22 22"</code>, cada barra <code>16×3px</code> com <code>rx="1.5"</code>, nas posições y = 4, 9.5 e 15, x = 3.</li>
+    <li><strong>Manhã / sol</strong> (aba): círculo central <code>cx="11" cy="11" r="4.5"</code> preenchido, mais 4 raios (linhas <code>stroke-width="1.8"</code>, <code>stroke-linecap="round"</code>) nas posições 12h/6h/3h/9h.</li>
+    <li><strong>Fechamento / lua</strong> (aba): um único <code>path</code> em forma de crescente — <code>M17 12.5A7 7 0 019 3a7.5 7.5 0 108 9.5z</code> — preenchido sólido.</li>
+    <li><strong>Resumo / gráfico de barras</strong> (aba): 3 retângulos verticais de alturas crescentes (8, 13, 18px), <code>rx="1"</code>, alinhados à base.</li>
+    <li><strong>Checkmark</strong> (indicador de status preenchido): <code>viewBox="0 0 13 10"</code>, path <code>M1 5l4 4 7-8</code>, <code>stroke="#F6C500"</code> sobre círculo preto, <code>stroke-width="2"</code>, <code>stroke-linecap/linejoin="round"</code>.</li>
+    <li><strong>Fechar (✕)</strong> (bottom sheet): caractere de texto "✕" 15px sobre botão circular <code>30×30px</code>, fundo <code>rgba(17,17,17,0.06)</code> — não é SVG.</li>
+    <li><strong>Voltar / chevron</strong>, quando aplicável, segue o mesmo padrão de traço 2–2.5px arredondado, nunca preenchido.</li>
+  </ul>
+  <p>Emojis são usados apenas em dois pontos pontuais e funcionais — banners de confirmação (✅) e de divergência (⚠️) — como reforço rápido de leitura, nunca como recurso decorativo geral.</p>
+
+  <h2 style="font-size:19px;font-weight:800;color:#111111;border-bottom:2px solid #111111;padding-bottom:6px;margin-top:32px">6. Navegação</h2>
+  <p>Barra inferior fixa com 4 abas — <strong>Lista</strong>, <strong>Manhã</strong>, <strong>Fechamento</strong>, <strong>Resumo</strong> — sempre visível, com o ícone da aba ativa em preto e as demais em preto a 35% de opacidade.</p>
+
+  <h2 style="font-size:19px;font-weight:800;color:#111111;border-bottom:2px solid #111111;padding-bottom:6px;margin-top:32px">7. Telas</h2>
+
+  <h3 style="font-size:16px;font-weight:700;color:#111111;margin-top:22px">7.1 Lista de Aparelhos</h3>
+  <ul>
+    <li>Busca por nome, marca, modelo ou IMEI.</li>
+    <li>Filtros por categoria (Todos, Lacrados, Seminovos, Americanos), cada chip mostrando o contador de aparelhos.</li>
+    <li>Botão <strong>+ Adicionar aparelho</strong>, com formulário reduzido (foto, nome, marca, modelo, categoria) — cadastro completo pode ser finalizado depois na ficha do aparelho.</li>
+    <li>Cada linha exibe um selo de categoria com tratamento visual distinto: <strong>Lacrado</strong> (preto/texto branco), <strong>Seminovo</strong> (amarelo/texto preto), <strong>Americano</strong> (branco com contorno preto).</li>
+    <li>Toque em um aparelho abre a ficha individual (somente leitura) com dados e histórico cronológico de movimentações.</li>
+  </ul>
+
+  <h3 style="font-size:16px;font-weight:700;color:#111111;margin-top:22px">7.2 Primeira Contagem &amp; 7.3 Contagem Final</h3>
+  <p>As duas telas compartilham a <strong>mesma estrutura</strong> — mesmo checklist agrupado por categoria e mesma especificação de status — variando apenas o momento do dia e, na Contagem Final, uma referência somente leitura à Primeira Contagem do dia.</p>
+  <ul>
+    <li>Contadores por categoria no topo (ex: "Lacrados 2/4") mais contador geral.</li>
+    <li>Aparelhos agrupados em seções: Lacrados, Seminovos, Americanos.</li>
+    <li>Botão <strong>Finalizar Contagem</strong> com confirmação em duas etapas; após finalizar, a contagem é travada (não editável) e um banner confirma horário e responsável.</li>
+    <li>Anexo de fotos opcional após a finalização.</li>
+  </ul>
+
+  <div class="card" style="background:rgba(17,17,17,0.04);border-radius:12px;padding:16px 18px;margin:16px 0">
+    <div style="font-size:12px;font-weight:800;color:#111111;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px">Padrão de interação — checklist expansível</div>
+    <p style="margin:0;font-size:14px">Cada aparelho aparece primeiro como um item de checklist compacto (nome + indicador circular). Ao tocar, a <strong>especificação completa aparece no mesmo lugar</strong>, substituindo o checklist:</p>
+    <p style="margin:10px 0 0;font-size:14px;font-weight:700">Continua na loja · Entrada · Vendido · Transferido · Saiu · Assistência · Troca · Outro</p>
+    <p style="margin:10px 0 0;font-size:14px">Ao escolher uma opção, o card recolhe automaticamente de volta ao formato compacto, agora mostrando o status escolhido e o indicador preenchido. Selecionar "Outro" mantém um campo de observação em texto livre sempre visível abaixo do item.</p>
+  </div>
+
+  <h3 style="font-size:16px;font-weight:700;color:#111111;margin-top:22px">7.4 Resumo do Dia</h3>
+  <ul>
+    <li>Alternância entre os cenários "Tudo certo" e "Divergência" (para fins de demonstração do protótipo).</li>
+    <li>Cartão com Primeira Contagem, Movimentações do dia, Total Esperado (calculado), Contagem Final e Status final.</li>
+    <li>Em caso de divergência, lista os aparelhos específicos que geraram a diferença, não apenas o número.</li>
+  </ul>
+
+  <h2 style="font-size:19px;font-weight:800;color:#111111;border-bottom:2px solid #111111;padding-bottom:6px;margin-top:32px">8. Interações e comportamentos</h2>
+  <ul>
+    <li><strong>Navegação por abas</strong>: clique troca uma variável de estado (<code>tab</code>); sem animação de transição entre telas — troca instantânea de conteúdo.</li>
+    <li><strong>Filtro de categoria / busca</strong> (Lista): clique no chip atualiza o filtro ativo; digitar no campo de busca filtra em tempo real por nome, marca, modelo ou IMEI (comparação case-insensitive, sem debounce necessário no volume do protótipo).</li>
+    <li><strong>Abrir ficha do aparelho</strong>: clique na linha da lista sobe uma bottom sheet (<code>translateY(24px)→0</code> + fade, ~0.2s, <code>ease</code>); clique fora da folha ou no ✕ fecha (o clique dentro da folha não deve propagar/fechar — <code>stopPropagation</code>).</li>
+    <li><strong>Checklist expansível</strong> (Manhã/Fechamento): clique no cabeçalho do item alterna <code>expandedId</code> (apenas um item aberto por vez, por tela); ao escolher uma opção de status, a grade fecha automaticamente (<code>expandedId = null</code>) e o item volta ao formato compacto já com o selo do status escolhido.</li>
+    <li><strong>Campo "Outro"</strong>: ao selecionar o status "Outro", um campo de texto obrigatório aparece abaixo do item e permanece visível mesmo com o item recolhido, para edição a qualquer momento.</li>
+    <li><strong>Finalizar contagem</strong>: fluxo de confirmação em duas etapas — modal 1 "Finalizar contagem?" (Cancelar/Continuar) → modal 2 "Tem certeza? Essa ação não poderá ser editada depois." (Cancelar/Confirmar). Ao confirmar, grava horário e responsável, trava todos os itens (cliques deixam de ter efeito) e mostra banner de confirmação.</li>
+    <li><strong>Anexar foto</strong> (pós-finalização): botão tracejado incrementa um contador local de fotos anexadas (placeholder de upload).</li>
+    <li><strong>Adicionar aparelho</strong> (Lista): abre modal com slot de foto (arrastar/soltar ou clique para escolher arquivo), campos de texto e seleção de categoria (single-select, 3 botões); ao confirmar, o aparelho entra na Lista e passa a aparecer também nas seções por categoria da Contagem Final.</li>
+    <li><strong>Alternância de cenário</strong> (Resumo): segmented control de 2 opções recalcula instantaneamente os números do cartão de relatório (nenhuma chamada assíncrona — troca de estado local).</li>
+  </ul>
+  <p>Transições/keyframes usados: <code>fadeIn</code> (opacity 0→1) em overlays de modal/sheet; <code>sheetUp</code> (translateY 24px→0 + opacity 0→1) na bottom sheet — ambas ~0.15–0.2s <code>ease</code>. Não há easing customizado, spring ou biblioteca de animação.</p>
+
+  <h2 style="font-size:19px;font-weight:800;color:#111111;border-bottom:2px solid #111111;padding-bottom:6px;margin-top:32px">9. Modelo de dados (do protótipo)</h2>
+  <p><strong>Aparelho</strong>: id, nome, marca, modelo, cor (opcional), imei (opcional), categoria (lacrado | seminovo | americano — escolha única), foto (opcional), histórico (lista ordenada de strings cronológicas, somente leitura).</p>
+  <p><strong>Registro de contagem</strong> (Primeira/Final, por dia): status por aparelho — um de <code>continua</code> · <code>entrada</code> · <code>vendido</code> · <code>transferido</code> · <code>saiu</code> · <code>assistencia</code> · <code>troca</code> · <code>outro</code> (com observação em texto livre obrigatória quando "outro"); data, horário de finalização, responsável (usuário logado), fotos anexadas; estado <code>finalizado</code> (booleano) que trava edição.</p>
+  <p><strong>Resumo do dia</strong>: derivado — nunca digitado — a partir dos dois registros de contagem: contadores por categoria da Primeira Contagem, contadores de movimentações do dia, Total Esperado (Primeira Contagem − saídas + entradas), contadores por categoria da Contagem Final, status final (OK ou lista de aparelhos divergentes).</p>
+
+  <h2 style="font-size:19px;font-weight:800;color:#111111;border-bottom:2px solid #111111;padding-bottom:6px;margin-top:32px">10. Tokens de design (resumo)</h2>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:8px" cellpadding="0" cellspacing="0">
+    <thead>
+      <tr style="border-bottom:2px solid #111111">
+        <th style="text-align:left;padding:6px 8px;font-weight:800">Token</th>
+        <th style="text-align:left;padding:6px 8px;font-weight:800">Valor</th>
+        <th style="text-align:left;padding:6px 8px;font-weight:800">Uso</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom:1px solid rgba(17,17,17,0.12)"><td style="padding:6px 8px">color/bg</td><td style="padding:6px 8px">#FFFFFF</td><td style="padding:6px 8px">fundo geral</td></tr>
+      <tr style="border-bottom:1px solid rgba(17,17,17,0.12)"><td style="padding:6px 8px">color/fg</td><td style="padding:6px 8px">#111111</td><td style="padding:6px 8px">texto, botões primários, bordas fortes</td></tr>
+      <tr style="border-bottom:1px solid rgba(17,17,17,0.12)"><td style="padding:6px 8px">color/accent</td><td style="padding:6px 8px">#F6C500</td><td style="padding:6px 8px">destaque/seleção, texto sobre preto</td></tr>
+      <tr style="border-bottom:1px solid rgba(17,17,17,0.12)"><td style="padding:6px 8px">color/fg-muted</td><td style="padding:6px 8px">rgba(17,17,17,.55)</td><td style="padding:6px 8px">texto secundário</td></tr>
+      <tr style="border-bottom:1px solid rgba(17,17,17,0.12)"><td style="padding:6px 8px">color/border</td><td style="padding:6px 8px">rgba(17,17,17,.08–.15)</td><td style="padding:6px 8px">bordas de card/input</td></tr>
+      <tr style="border-bottom:1px solid rgba(17,17,17,0.12)"><td style="padding:6px 8px">color/surface-soft</td><td style="padding:6px 8px">rgba(17,17,17,.04–.06)</td><td style="padding:6px 8px">fundos sutis (chips, banners neutros)</td></tr>
+      <tr style="border-bottom:1px solid rgba(17,17,17,0.12)"><td style="padding:6px 8px">font/family</td><td style="padding:6px 8px">Plus Jakarta Sans</td><td style="padding:6px 8px">toda a UI</td></tr>
+      <tr style="border-bottom:1px solid rgba(17,17,17,0.12)"><td style="padding:6px 8px">radius/sm · md · lg · pill</td><td style="padding:6px 8px">10–12 · 14–16 · 18–24 · 999px</td><td style="padding:6px 8px">botões/chips · cards · modais/sheet · selos</td></tr>
+      <tr><td style="padding:6px 8px">space scale</td><td style="padding:6px 8px">6/8/10/12/14/16/20px</td><td style="padding:6px 8px">todo padding/gap</td></tr>
+    </tbody>
+  </table>
+
+  <h2 style="font-size:19px;font-weight:800;color:#111111;border-bottom:2px solid #111111;padding-bottom:6px;margin-top:32px">11. Regras de estado</h2>
+  <ul>
+    <li>Primeira Contagem finalizada é imutável — mesma regra vale para a Contagem Final.</li>
+    <li>Toda finalização passa por confirmação em duas etapas, para evitar toque acidental.</li>
+    <li>Aparelhos cadastrados durante o dia (via Lista) entram automaticamente nas seções da Contagem Final, sem retroagir à Primeira Contagem.</li>
+    <li>Enquanto uma contagem não está finalizada, os itens exibem apenas o indicador vazio; não há distinção visual de "pendente" além da ausência do selo de status.</li>
+  </ul>
+
+  <h2 style="font-size:19px;font-weight:800;color:#111111;border-bottom:2px solid #111111;padding-bottom:6px;margin-top:32px">12. Arquivos do protótipo</h2>
+  <p><code>Conferencia Diaria.dc.html</code> — protótipo interativo completo (as 4 telas, estado e interações descritos acima). <code>ios-frame.jsx</code> — moldura de iPhone (bezel, status bar, home indicator). <code>image-slot.js</code> — componente de upload de foto por arrastar-e-soltar usado no formulário de cadastro.</p>
+
+  <h2 style="font-size:19px;font-weight:800;color:#111111;border-bottom:2px solid #111111;padding-bottom:6px;margin-top:32px">13. Notas para implementação</h2>
+  <p>Os arquivos HTML deste pacote são <strong>referências de design</strong> — protótipos que demonstram aparência e comportamento pretendidos, não código de produção para copiar diretamente. A tarefa é recriar este design no ambiente/stack já existente do projeto (React Native, Flutter, iOS/Android nativo, etc.), usando os padrões e bibliotecas já estabelecidos ali; na ausência de um ambiente definido, qualquer framework mobile-first moderno é adequado. Este é um protótipo de <strong>alta fidelidade</strong> (hifi): cores, tipografia, espaçamento e interações devem ser recriados o mais próximo possível dos valores exatos listados neste documento.</p>
+  <p>Fluxo de bloqueio/pendência de contagens não finalizadas, módulo de Análise (log de auditoria) e autenticação por papel (RBAC) não foram construídos nesta fase de protótipo visual — ver PRD original para especificação funcional completa dessas partes.</p>
+
+</doc-page>
+
+</x-dc>
+</body>
+</html>

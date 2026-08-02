@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="./image-slot.js"></script>
+  <style>
+    body { margin: 0; background: #EFEFEC; overflow-x: hidden; }
+    html { overflow-x: hidden; }
+    a { color: #111111; }
+    a:hover { color: #F6C500; }
+    input::placeholder { color: rgba(17,17,17,0.4); }
+    @keyframes sheetUp { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</helmet>
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif">
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+  <div style="height:100%;display:flex;flex-direction:column;background:#FFFFFF;position:relative;font-family:'Plus Jakarta Sans',sans-serif">
+
+    <sc-if value="{{ isSplash }}" hint-placeholder-val="{{ true }}">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:54px 32px 40px;box-sizing:border-box;text-align:center;gap:22px">
+        <div style="width:84px;height:84px;border-radius:22px;background:#111111;display:flex;align-items:center;justify-content:center">
+          <svg width="38" height="30" viewBox="0 0 38 30"><path d="M3 15l11 11L35 3" stroke="#F6C500" strokeWidth="4.5" fill="none" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+        </div>
+        <div>
+          <div style="font-size:24px;font-weight:800;color:#111111">Conferência Diária</div>
+          <div style="font-size:14px;color:rgba(17,17,17,0.55);margin-top:8px;line-height:1.5">Contagem de aparelhos da loja, do jeito que a equipe já conhece — agora no celular.</div>
+        </div>
+        <button onClick="{{ goToLogin }}" style="width:100%;padding:15px;border-radius:14px;border:none;background:#111111;color:#F6C500;font-size:14.5px;font-weight:700;font-family:inherit;cursor:pointer">Começar</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isLogin }}">
+      <div style="flex:1;display:flex;flex-direction:column;padding:70px 24px 30px;box-sizing:border-box">
+        <div style="font-size:24px;font-weight:800;color:#111111">Entrar</div>
+        <div style="font-size:13.5px;color:rgba(17,17,17,0.55);margin-top:4px;margin-bottom:28px">Use o e-mail e senha cadastrados pela sua loja.</div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div>
+            <div style="font-size:12.5px;font-weight:700;color:#111111;margin-bottom:6px">E-mail</div>
+            <input type="email" placeholder="voce@loja.com" value="{{ loginEmail }}" onChange="{{ onLoginEmailChange }}" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:12px;border:1.5px solid rgba(17,17,17,0.15);font-size:14px;font-family:inherit;color:#111111;outline:none"/>
+          </div>
+          <div>
+            <div style="font-size:12.5px;font-weight:700;color:#111111;margin-bottom:6px">Senha</div>
+            <input type="password" placeholder="••••••••" value="{{ loginSenha }}" onChange="{{ onLoginSenhaChange }}" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:12px;border:1.5px solid rgba(17,17,17,0.15);font-size:14px;font-family:inherit;color:#111111;outline:none"/>
+          </div>
+        </div>
+        <sc-if value="{{ loginError }}">
+          <div style="margin-top:14px;padding:10px 12px;border-radius:10px;background:#F6C500;color:#111111;font-size:12.5px;font-weight:700">Informe e-mail e senha para continuar.</div>
+        </sc-if>
+        <button onClick="{{ submitLogin }}" style="margin-top:22px;width:100%;padding:15px;border-radius:14px;border:none;background:#111111;color:#F6C500;font-size:14.5px;font-weight:700;font-family:inherit;cursor:pointer">Entrar</button>
+        <div style="margin-top:auto;text-align:center;font-size:12px;color:rgba(17,17,17,0.4)">Loja Centro · Staff</div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isApp }}">
+    <div style="flex:1;overflow-y:auto;padding-top:54px;-webkit-overflow-scrolling:touch">
+
+      <sc-if value="{{ isLista }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:16px 20px 4px">
+          <div style="font-size:26px;font-weight:800;color:#111111;letter-spacing:-0.3px">Aparelhos</div>
+          <div style="font-size:14px;color:rgba(17,17,17,0.55);margin-top:2px">{{ totalCount }} cadastrados</div>
+        </div>
+        <div style="padding:12px 20px 10px">
+          <input type="text" placeholder="Buscar por nome, marca, modelo ou IMEI" value="{{ search }}" onChange="{{ onSearchChange }}" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:14px;border:1.5px solid rgba(17,17,17,0.12);background:#fff;font-size:14px;font-family:inherit;color:#111111;outline:none"/>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;padding:0 20px 14px">
+          <sc-for list="{{ catChips }}" as="c" hint-placeholder-count="4">
+            <button onClick="{{ c.onClick }}" style="padding:8px 14px;border-radius:999px;border:1.5px solid {{ c.borderColor }};background:{{ c.bg }};color:{{ c.color }};font-size:13px;font-weight:700;white-space:nowrap;font-family:inherit;cursor:pointer">{{ c.label }} ({{ c.count }})</button>
+          </sc-for>
+        </div>
+        <div style="padding:0 20px 14px">
+          <button onClick="{{ openAddDevice }}" style="width:100%;padding:12px;border-radius:12px;border:none;background:#111111;color:#F6C500;font-size:13.5px;font-weight:700;font-family:inherit;cursor:pointer">+ Adicionar aparelho</button>
+        </div>
+        <div style="padding:0 20px 100px;display:flex;flex-direction:column;gap:10px">
+          <sc-for list="{{ filteredDevices }}" as="d" hint-placeholder-count="6">
+            <div onClick="{{ d.onOpen }}" style="background:#fff;border-radius:16px;padding:12px 14px;display:flex;gap:12px;align-items:center;cursor:pointer;border:1.5px solid rgba(17,17,17,0.08)">
+              <div style="width:42px;height:42px;border-radius:11px;background:{{ d.tagBg }};display:flex;align-items:center;justify-content:center;font-weight:800;color:{{ d.tagColor }};font-size:14px;flex-shrink:0;border:1.5px solid {{ d.tagBorder }};box-sizing:border-box">{{ d.initials }}</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:15px;font-weight:600;color:#111111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ d.nome }}</div>
+                <div style="font-size:12.5px;color:rgba(17,17,17,0.55);margin-top:2px">{{ d.marca }} · {{ d.modelo }}</div>
+              </div>
+              <div style="font-size:11.5px;font-weight:700;color:{{ d.tagColor }};background:{{ d.tagBg }};padding:4px 10px;border-radius:999px;flex-shrink:0;border:1.5px solid {{ d.tagBorder }};box-sizing:border-box">{{ d.tagLabel }}</div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ noResults }}">
+            <div style="text-align:center;color:rgba(17,17,17,0.4);font-size:14px;padding:30px 0">Nenhum aparelho encontrado.</div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isManha }}">
+        <div style="padding:16px 20px 4px">
+          <div style="font-size:22px;font-weight:800;color:#111111">Primeira Contagem</div>
+          <div style="font-size:13px;color:rgba(17,17,17,0.55);margin-top:2px">{{ todayLabel }}</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:8px;padding:12px 20px 6px">
+          <sc-for list="{{ manhaChips }}" as="m" hint-placeholder-count="4">
+            <div style="padding:9px 8px;border-radius:12px;background:{{ m.bg }};color:{{ m.color }};font-size:12.5px;font-weight:700;text-align:center">{{ m.label }}</div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ manhaFinalized }}">
+          <div style="margin:10px 20px;padding:12px 14px;border-radius:14px;background:#111111;color:#F6C500;font-size:13px;font-weight:700;display:flex;gap:8px;align-items:center">
+            <span>✅</span><span>Contagem finalizada às {{ manhaFinalizedAt }} por {{ responsavel }}</span>
+          </div>
+        </sc-if>
+
+        <sc-for list="{{ manhaSections }}" as="sec" hint-placeholder-count="3">
+          <div style="padding:14px 20px 8px;font-size:12.5px;font-weight:800;color:rgba(17,17,17,0.55);text-transform:uppercase;letter-spacing:0.4px">{{ sec.label }} · {{ sec.countLabel }}</div>
+          <div style="padding:0 20px;display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ sec.devices }}" as="d" hint-placeholder-count="3">
+              <div style="background:#fff;border-radius:14px;padding:12px 14px;border:1.5px solid rgba(17,17,17,0.08)">
+                <div onClick="{{ d.onToggleExpand }}" style="display:flex;align-items:center;gap:10px;cursor:{{ d.cursor }}">
+                  <div style="flex:1;min-width:0">
+                    <div style="font-size:14.5px;font-weight:600;color:#111111">{{ d.nome }}</div>
+                    <div style="font-size:12px;color:rgba(17,17,17,0.55);margin-top:1px">{{ d.marca }} · {{ d.modelo }}</div>
+                  </div>
+                  <sc-if value="{{ d.hasStatus }}">
+                    <div style="font-size:11px;font-weight:700;color:#111111;background:rgba(17,17,17,0.06);padding:4px 9px;border-radius:999px;white-space:nowrap">{{ d.statusLabel }}</div>
+                  </sc-if>
+                  <div style="width:26px;height:26px;border-radius:999px;border:2px solid {{ d.checkBorder }};background:{{ d.checkBg }};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                    <sc-if value="{{ d.hasStatus }}">
+                      <svg width="13" height="10" viewBox="0 0 13 10"><path d="M1 5l4 4 7-8" stroke="#F6C500" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                    </sc-if>
+                  </div>
+                </div>
+                <sc-if value="{{ d.expanded }}">
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px">
+                    <sc-for list="{{ d.statusOptions }}" as="s" hint-placeholder-count="8">
+                      <button onClick="{{ s.onClick }}" style="padding:9px 6px;border-radius:10px;border:1.5px solid {{ s.borderColor }};background:{{ s.bg }};color:{{ s.color }};font-size:12px;font-weight:700;font-family:inherit;cursor:pointer">{{ s.label }}</button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ d.showOutro }}">
+                  <input type="text" placeholder="Descreva o que aconteceu (obrigatório)" value="{{ d.outroValue }}" onChange="{{ d.onOutroChange }}" style="width:100%;box-sizing:border-box;margin-top:10px;padding:10px 12px;border-radius:10px;border:1.5px solid rgba(17,17,17,0.12);background:#FAFAFA;font-size:13px;font-family:inherit;color:#111111;outline:none"/>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-for>
+
+        <sc-if value="{{ manhaFinalized }}">
+          <div style="margin:16px 20px 100px">
+            <div style="font-size:12.5px;font-weight:800;color:rgba(17,17,17,0.55);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px">Fotos da contagem</div>
+            <button onClick="{{ addManhaPhoto }}" style="width:100%;padding:14px;border-radius:14px;border:1.5px dashed rgba(17,17,17,0.25);background:#fff;color:rgba(17,17,17,0.6);font-size:13.5px;font-weight:600;font-family:inherit;cursor:pointer">+ Adicionar foto ({{ manhaPhotos }} anexada{{ manhaPhotosPlural }})</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ manhaNotFinalized }}">
+          <div style="margin:16px 20px 100px">
+            <button onClick="{{ manhaConfirmOpen }}" style="width:100%;padding:15px;border-radius:14px;border:none;background:#111111;color:#F6C500;font-size:14.5px;font-weight:700;font-family:inherit;cursor:pointer">Finalizar Contagem</button>
+          </div>
+        </sc-if>
+      </sc-if>
+
+      <sc-if value="{{ isFechamento }}">
+        <div style="padding:16px 20px 4px">
+          <div style="font-size:22px;font-weight:800;color:#111111">Contagem Final</div>
+          <div style="font-size:13px;color:rgba(17,17,17,0.55);margin-top:2px">{{ todayLabel }}</div>
+        </div>
+        <div style="margin:12px 20px 6px;padding:12px 14px;border-radius:14px;background:rgba(17,17,17,0.05);color:rgba(17,17,17,0.6);font-size:12.5px;font-weight:600">{{ morningRefLabel }}</div>
+
+<div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:8px;padding:6px 20px 6px">
+          <sc-for list="{{ fechamentoChips }}" as="m" hint-placeholder-count="4">
+            <div style="padding:9px 8px;border-radius:12px;background:{{ m.bg }};color:{{ m.color }};font-size:12.5px;font-weight:700;text-align:center">{{ m.label }}</div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ fechamentoFinalized }}">
+          <div style="margin:10px 20px;padding:12px 14px;border-radius:14px;background:#111111;color:#F6C500;font-size:13px;font-weight:700;display:flex;gap:8px;align-items:center">
+            <span>✅</span><span>Contagem finalizada às {{ fechamentoFinalizedAt }} por {{ responsavel }}</span>
+          </div>
+        </sc-if>
+
+        <sc-for list="{{ fechamentoSections }}" as="sec" hint-placeholder-count="3">
+          <div style="padding:14px 20px 8px;font-size:12.5px;font-weight:800;color:rgba(17,17,17,0.55);text-transform:uppercase;letter-spacing:0.4px">{{ sec.label }} · {{ sec.countLabel }}</div>
+          <div style="padding:0 20px;display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ sec.devices }}" as="d" hint-placeholder-count="3">
+              <div style="background:#fff;border-radius:14px;padding:12px 14px;border:1.5px solid rgba(17,17,17,0.08)">
+                <div onClick="{{ d.onToggleExpand }}" style="display:flex;align-items:center;gap:10px;cursor:{{ d.cursor }}">
+                  <div style="flex:1;min-width:0">
+                    <div style="font-size:14.5px;font-weight:600;color:#111111">{{ d.nome }}</div>
+                    <div style="font-size:12px;color:rgba(17,17,17,0.55);margin-top:1px">{{ d.marca }} · {{ d.modelo }}</div>
+                  </div>
+                  <sc-if value="{{ d.hasStatus }}">
+                    <div style="font-size:11px;font-weight:700;color:#111111;background:rgba(17,17,17,0.06);padding:4px 9px;border-radius:999px;white-space:nowrap">{{ d.statusLabel }}</div>
+                  </sc-if>
+                  <div style="width:26px;height:26px;border-radius:999px;border:2px solid {{ d.checkBorder }};background:{{ d.checkBg }};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                    <sc-if value="{{ d.hasStatus }}">
+                      <svg width="13" height="10" viewBox="0 0 13 10"><path d="M1 5l4 4 7-8" stroke="#F6C500" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                    </sc-if>
+                  </div>
+                </div>
+                <sc-if value="{{ d.expanded }}">
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px">
+                    <sc-for list="{{ d.statusOptions }}" as="s" hint-placeholder-count="8">
+                      <button onClick="{{ s.onClick }}" style="padding:9px 6px;border-radius:10px;border:1.5px solid {{ s.borderColor }};background:{{ s.bg }};color:{{ s.color }};font-size:12px;font-weight:700;font-family:inherit;cursor:pointer">{{ s.label }}</button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ d.showOutro }}">
+                  <input type="text" placeholder="Descreva o que aconteceu (obrigatório)" value="{{ d.outroValue }}" onChange="{{ d.onOutroChange }}" style="width:100%;box-sizing:border-box;margin-top:10px;padding:10px 12px;border-radius:10px;border:1.5px solid rgba(17,17,17,0.12);background:#FAFAFA;font-size:13px;font-family:inherit;color:#111111;outline:none"/>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-for>
+
+        <sc-if value="{{ fechamentoFinalized }}">
+          <div style="margin:16px 20px 100px">
+            <div style="font-size:12.5px;font-weight:800;color:rgba(17,17,17,0.55);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px">Fotos da contagem</div>
+            <button onClick="{{ addFechamentoPhoto }}" style="width:100%;padding:14px;border-radius:14px;border:1.5px dashed rgba(17,17,17,0.25);background:#fff;color:rgba(17,17,17,0.6);font-size:13.5px;font-weight:600;font-family:inherit;cursor:pointer">+ Adicionar foto ({{ fechamentoPhotos }} anexada{{ fechamentoPhotosPlural }})</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ fechamentoNotFinalized }}">
+          <div style="margin:16px 20px 100px">
+            <button onClick="{{ fechamentoConfirmOpen }}" style="width:100%;padding:15px;border-radius:14px;border:none;background:#111111;color:#F6C500;font-size:14.5px;font-weight:700;font-family:inherit;cursor:pointer">Finalizar Contagem</button>
+          </div>
+        </sc-if>
+      </sc-if>
+
+      <sc-if value="{{ isResumo }}">
+        <div style="padding:16px 20px 4px">
+          <div style="font-size:22px;font-weight:800;color:#111111">Relatório do Dia</div>
+          <div style="font-size:13px;color:rgba(17,17,17,0.55);margin-top:2px">{{ todayLabel }}</div>
+        </div>
+        <div style="display:flex;gap:6px;padding:6px;background:rgba(17,17,17,0.05);margin:14px 20px 6px;border-radius:12px;width:fit-content">
+          <button onClick="{{ setScenarioOk }}" style="padding:8px 14px;border-radius:9px;border:none;background:{{ scenarioOkBg }};color:{{ scenarioOkColor }};font-size:12.5px;font-weight:700;font-family:inherit;cursor:pointer">Tudo certo</button>
+          <button onClick="{{ setScenarioDiv }}" style="padding:8px 14px;border-radius:9px;border:none;background:{{ scenarioDivBg }};color:{{ scenarioDivColor }};font-size:12.5px;font-weight:700;font-family:inherit;cursor:pointer">Divergência</button>
+        </div>
+
+        <div style="margin:8px 20px 100px;background:#fff;border-radius:18px;border:1.5px solid rgba(17,17,17,0.08);overflow:hidden">
+          <div style="padding:16px 16px 10px;font-size:12.5px;font-weight:800;color:rgba(17,17,17,0.55);text-transform:uppercase;letter-spacing:0.4px">Primeira Contagem (08:00)</div>
+          <div style="display:flex;padding:0 16px 14px;gap:10px">
+            <sc-for list="{{ resumoPrimeira }}" as="r" hint-placeholder-count="4">
+              <div style="flex:1;background:rgba(17,17,17,0.04);border-radius:12px;padding:10px;text-align:center">
+                <div style="font-size:18px;font-weight:800;color:#111111">{{ r.value }}</div>
+                <div style="font-size:10.5px;color:rgba(17,17,17,0.55);font-weight:600;margin-top:2px">{{ r.label }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="height:1.5px;background:rgba(17,17,17,0.08);margin:0 16px"></div>
+          <div style="padding:14px 16px 6px;font-size:12.5px;font-weight:800;color:rgba(17,17,17,0.55);text-transform:uppercase;letter-spacing:0.4px">Movimentações do dia</div>
+          <div style="padding:0 16px 12px;display:flex;flex-direction:column;gap:6px">
+            <sc-for list="{{ resumoMovs }}" as="mv" hint-placeholder-count="7">
+              <div style="display:flex;justify-content:space-between;font-size:13.5px;color:#111111;padding:3px 0">
+                <span>{{ mv.label }}</span><span style="font-weight:700">{{ mv.value }}</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="margin:0 16px 14px;padding:10px 12px;border-radius:10px;background:rgba(17,17,17,0.05)">
+            <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:800;color:#111111"><span>Total Esperado</span><span>{{ resumoEsperado }}</span></div>
+            <div style="font-size:11px;color:rgba(17,17,17,0.55);margin-top:3px">Primeira Contagem − Saídas + Entradas</div>
+          </div>
+
+          <div style="height:1.5px;background:rgba(17,17,17,0.08);margin:0 16px"></div>
+          <div style="padding:14px 16px 10px;font-size:12.5px;font-weight:800;color:rgba(17,17,17,0.55);text-transform:uppercase;letter-spacing:0.4px">Contagem Final (19:00)</div>
+          <div style="display:flex;padding:0 16px 14px;gap:10px">
+            <sc-for list="{{ resumoFinal }}" as="r" hint-placeholder-count="4">
+              <div style="flex:1;background:rgba(17,17,17,0.04);border-radius:12px;padding:10px;text-align:center">
+                <div style="font-size:18px;font-weight:800;color:#111111">{{ r.value }}</div>
+                <div style="font-size:10.5px;color:rgba(17,17,17,0.55);font-weight:600;margin-top:2px">{{ r.label }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="margin:0 16px 16px;padding:14px;border-radius:12px;background:{{ statusBg }};color:{{ statusColor }}">
+            <div style="font-size:14px;font-weight:800">{{ statusHeadline }}</div>
+            <sc-if value="{{ isDivergence }}">
+              <div style="font-size:12.5px;margin-top:6px;font-weight:500">Aparelhos que geraram a divergência:</div>
+              <sc-for list="{{ divergenceList }}" as="dv" hint-placeholder-count="1">
+                <div style="font-size:13px;margin-top:4px;font-weight:600">• {{ dv }}</div>
+              </sc-for>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+
+    <div style="display:flex;border-top:1.5px solid rgba(17,17,17,0.08);background:#fff;padding:8px 6px calc(env(safe-area-inset-bottom,0px) + 22px);flex-shrink:0">
+      <button onClick="{{ goLista }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;font-family:inherit;cursor:pointer;color:{{ tabColorLista }}">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="4" width="16" height="3" rx="1.5" fill="currentColor"></rect><rect x="3" y="9.5" width="16" height="3" rx="1.5" fill="currentColor"></rect><rect x="3" y="15" width="16" height="3" rx="1.5" fill="currentColor"></rect></svg>
+        <span style="font-size:10.5px;font-weight:700">Lista</span>
+      </button>
+      <button onClick="{{ goManha }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;font-family:inherit;cursor:pointer;color:{{ tabColorManha }}">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="4.5" fill="currentColor"></circle><g stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><line x1="11" y1="1.5" x2="11" y2="3.8"></line><line x1="11" y1="18.2" x2="11" y2="20.5"></line><line x1="1.5" y1="11" x2="3.8" y2="11"></line><line x1="18.2" y1="11" x2="20.5" y2="11"></line></g></svg>
+        <span style="font-size:10.5px;font-weight:700">Manhã</span>
+      </button>
+      <button onClick="{{ goFechamento }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;font-family:inherit;cursor:pointer;color:{{ tabColorFechamento }}">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M17 12.5A7 7 0 019 3a7.5 7.5 0 108 9.5z" fill="currentColor"></path></svg>
+        <span style="font-size:10.5px;font-weight:700">Fechamento</span>
+      </button>
+      <button onClick="{{ goResumo }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;font-family:inherit;cursor:pointer;color:{{ tabColorResumo }}">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="12" width="4" height="8" rx="1" fill="currentColor"></rect><rect x="9" y="7" width="4" height="13" rx="1" fill="currentColor"></rect><rect x="15" y="2" width="4" height="18" rx="1" fill="currentColor"></rect></svg>
+        <span style="font-size:10.5px;font-weight:700">Resumo</span>
+      </button>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ detailOpen }}">
+      <div onClick="{{ closeDetail }}" style="position:absolute;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:flex-end;z-index:200;animation:fadeIn 0.15s ease">
+        <div onClick="{{ stop }}" style="background:#fff;width:100%;max-height:80%;border-radius:24px 24px 0 0;overflow-y:auto;padding:10px 20px 32px;box-sizing:border-box;animation:sheetUp 0.2s ease">
+          <div style="width:36px;height:4px;background:rgba(17,17,17,0.15);border-radius:999px;margin:6px auto 14px"></div>
+          <div style="display:flex;align-items:flex-start;gap:12px">
+            <div style="width:56px;height:56px;border-radius:14px;background:{{ detailTagBg }};display:flex;align-items:center;justify-content:center;font-weight:800;color:{{ detailTagColor }};font-size:18px;flex-shrink:0;border:1.5px solid {{ detailTagBorder }};box-sizing:border-box">{{ detailInitials }}</div>
+            <div style="flex:1">
+              <div style="font-size:18px;font-weight:800;color:#111111">{{ detailNome }}</div>
+              <div style="font-size:11.5px;font-weight:700;color:{{ detailTagColor }};background:{{ detailTagBg }};padding:3px 9px;border-radius:999px;display:inline-block;margin-top:5px;border:1.5px solid {{ detailTagBorder }};box-sizing:border-box">{{ detailTagLabel }}</div>
+            </div>
+            <button onClick="{{ closeDetail }}" style="width:30px;height:30px;border-radius:999px;background:rgba(17,17,17,0.06);border:none;color:#111111;font-size:15px;font-family:inherit;cursor:pointer">✕</button>
+          </div>
+          <div style="margin-top:16px;display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ detailFields }}" as="f" hint-placeholder-count="4">
+              <div style="display:flex;justify-content:space-between;font-size:13.5px;padding:8px 0;border-bottom:1px solid rgba(17,17,17,0.06)">
+                <span style="color:rgba(17,17,17,0.55)">{{ f.label }}</span><span style="color:#111111;font-weight:600">{{ f.value }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="margin-top:18px;font-size:12.5px;font-weight:800;color:rgba(17,17,17,0.55);text-transform:uppercase;letter-spacing:0.4px">Histórico · somente leitura</div>
+          <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px">
+            <sc-for list="{{ detailHistory }}" as="h" hint-placeholder-count="3">
+              <div style="font-size:13px;color:#111111;background:rgba(17,17,17,0.04);border-radius:10px;padding:9px 12px">{{ h }}</div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ manhaConfirmStep }}">
+      <div style="position:absolute;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;z-index:210;padding:24px;box-sizing:border-box">
+        <div style="background:#fff;border-radius:18px;padding:20px;width:100%;max-width:280px;animation:fadeIn 0.15s ease">
+          <div style="font-size:16px;font-weight:800;color:#111111">{{ manhaConfirmTitle }}</div>
+          <div style="font-size:13px;color:rgba(17,17,17,0.6);margin-top:8px;line-height:1.4">{{ manhaConfirmBody }}</div>
+          <div style="display:flex;gap:8px;margin-top:18px">
+            <button onClick="{{ manhaConfirmCancel }}" style="flex:1;padding:11px;border-radius:11px;border:1.5px solid #111111;background:#fff;color:#111111;font-size:13.5px;font-weight:700;font-family:inherit;cursor:pointer">Cancelar</button>
+            <button onClick="{{ manhaConfirmNext }}" style="flex:1;padding:11px;border-radius:11px;border:none;background:#111111;color:#F6C500;font-size:13.5px;font-weight:700;font-family:inherit;cursor:pointer">{{ manhaConfirmActionLabel }}</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ fechamentoConfirmStep }}">
+      <div style="position:absolute;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;z-index:210;padding:24px;box-sizing:border-box">
+        <div style="background:#fff;border-radius:18px;padding:20px;width:100%;max-width:280px;animation:fadeIn 0.15s ease">
+          <div style="font-size:16px;font-weight:800;color:#111111">{{ fechamentoConfirmTitle }}</div>
+          <div style="font-size:13px;color:rgba(17,17,17,0.6);margin-top:8px;line-height:1.4">{{ fechamentoConfirmBody }}</div>
+          <div style="display:flex;gap:8px;margin-top:18px">
+            <button onClick="{{ fechamentoConfirmCancel }}" style="flex:1;padding:11px;border-radius:11px;border:1.5px solid #111111;background:#fff;color:#111111;font-size:13.5px;font-weight:700;font-family:inherit;cursor:pointer">Cancelar</button>
+            <button onClick="{{ fechamentoConfirmNext }}" style="flex:1;padding:11px;border-radius:11px;border:none;background:#111111;color:#F6C500;font-size:13.5px;font-weight:700;font-family:inherit;cursor:pointer">{{ fechamentoConfirmActionLabel }}</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ addDeviceOpen }}">
+      <div onClick="{{ closeAddDevice }}" style="position:absolute;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;z-index:210;padding:20px;box-sizing:border-box">
+        <div onClick="{{ stop }}" style="background:#fff;border-radius:18px;padding:20px;width:100%;animation:fadeIn 0.15s ease">
+          <div style="font-size:16px;font-weight:800;color:#111111;margin-bottom:12px">Adicionar aparelho</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <image-slot id="{{ newPhotoSlotId }}" shape="rounded" radius="14" placeholder="Foto do aparelho" style="width:100%;height:140px;flex-shrink:0"></image-slot>
+            <input type="text" placeholder="Nome (ex: iPhone 13)" value="{{ newNome }}" onChange="{{ onNewNomeChange }}" style="padding:11px 13px;border-radius:11px;border:1.5px solid rgba(17,17,17,0.12);font-size:13.5px;font-family:inherit;outline:none"/>
+            <input type="text" placeholder="Marca" value="{{ newMarca }}" onChange="{{ onNewMarcaChange }}" style="padding:11px 13px;border-radius:11px;border:1.5px solid rgba(17,17,17,0.12);font-size:13.5px;font-family:inherit;outline:none"/>
+            <input type="text" placeholder="Modelo" value="{{ newModelo }}" onChange="{{ onNewModeloChange }}" style="padding:11px 13px;border-radius:11px;border:1.5px solid rgba(17,17,17,0.12);font-size:13.5px;font-family:inherit;outline:none"/>
+            <div style="display:flex;gap:6px">
+              <sc-for list="{{ newCatOptions }}" as="nc" hint-placeholder-count="3">
+                <button onClick="{{ nc.onClick }}" style="flex:1;padding:9px;border-radius:10px;border:1.5px solid {{ nc.borderColor }};background:{{ nc.bg }};color:{{ nc.color }};font-size:12px;font-weight:700;font-family:inherit;cursor:pointer">{{ nc.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:16px">
+            <button onClick="{{ closeAddDevice }}" style="flex:1;padding:11px;border-radius:11px;border:1.5px solid #111111;background:#fff;color:#111111;font-size:13.5px;font-weight:700;font-family:inherit;cursor:pointer">Cancelar</button>
+            <button onClick="{{ submitAddDevice }}" style="flex:1;padding:11px;border-radius:11px;border:none;background:#111111;color:#F6C500;font-size:13.5px;font-weight:700;font-family:inherit;cursor:pointer">Adicionar</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+</x-import>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const CAT = {
+  lacrado: { label: 'Lacrado', bg: '#111111', color: '#FFFFFF', border: '#111111' },
+  seminovo: { label: 'Seminovo', bg: '#F6C500', color: '#111111', border: '#F6C500' },
+  americano: { label: 'Americano', bg: '#FFFFFF', color: '#111111', border: '#111111' },
+};
+const STATUS_LABELS = {
+  continua: 'Continua na loja', entrada: 'Entrada', vendido: 'Vendido',
+  transferido: 'Transferido', saiu: 'Saiu', assistencia: 'Assistência',
+  troca: 'Troca', outro: 'Outro',
+};
+const STATUS_KEYS = ['continua','entrada','vendido','transferido','saiu','assistencia','troca','outro'];
+const DEVICES = [
+  { id: 'd1', nome: 'iPhone 13 128GB', marca: 'Apple', modelo: '13 Preto', cor: 'Preto', imei: '35921100112233', categoria: 'lacrado',
+    history: ['29/07 - Contagem manhã - Presente', '29/07 - Fechamento - Continua na loja'] },
+  { id: 'd2', nome: 'iPhone 12 64GB', marca: 'Apple', modelo: '12 Branco', cor: 'Branco', imei: '35921100112240', categoria: 'seminovo',
+    history: ['28/07 - Contagem manhã - Presente', '28/07 - Fechamento - Vendido', '29/07 - Cadastro reposição'] },
+  { id: 'd3', nome: 'iPhone 11 128GB', marca: 'Apple', modelo: '11 Verde', cor: 'Verde', imei: '35921100112257', categoria: 'seminovo',
+    history: ['29/07 - Contagem manhã - Presente'] },
+  { id: 'd4', nome: 'Galaxy S23 256GB', marca: 'Samsung', modelo: 'S23', cor: 'Preto', imei: '35921100112264', categoria: 'lacrado',
+    history: ['29/07 - Contagem manhã - Presente', '29/07 - Fechamento - Continua na loja'] },
+  { id: 'd5', nome: 'Galaxy S21 128GB', marca: 'Samsung', modelo: 'S21', cor: 'Cinza', imei: '35921100112271', categoria: 'americano',
+    history: ['29/07 - Contagem manhã - Presente'] },
+  { id: 'd6', nome: 'Galaxy A54 128GB', marca: 'Samsung', modelo: 'A54', cor: 'Azul', imei: '35921100112288', categoria: 'lacrado',
+    history: ['27/07 - Contagem manhã - Presente', '27/07 - Fechamento - Continua na loja'] },
+  { id: 'd7', nome: 'Moto G84 256GB', marca: 'Motorola', modelo: 'G84', cor: 'Preto', imei: '35921100112295', categoria: 'seminovo',
+    history: ['29/07 - Contagem manhã - Presente'] },
+  { id: 'd8', nome: 'iPhone XR 64GB', marca: 'Apple', modelo: 'XR Vermelho', cor: 'Vermelho', imei: '35921100112301', categoria: 'americano',
+    history: ['29/07 - Contagem manhã - Presente'] },
+  { id: 'd9', nome: 'Galaxy Note 20', marca: 'Samsung', modelo: 'Note 20', cor: 'Preto', imei: '35921100112318', categoria: 'americano',
+    history: ['26/07 - Contagem manhã - Presente', '26/07 - Fechamento - Continua na loja'] },
+  { id: 'd10', nome: 'iPhone 14 128GB', marca: 'Apple', modelo: '14 Roxo', cor: 'Roxo', imei: '35921100112325', categoria: 'lacrado',
+    history: ['29/07 - Contagem manhã - Presente'] },
+  { id: 'd11', nome: 'Redmi Note 12', marca: 'Xiaomi', modelo: 'Note 12', cor: 'Azul', imei: '35921100112332', categoria: 'seminovo',
+    history: ['29/07 - Contagem manhã - Presente'] },
+  { id: 'd12', nome: 'iPhone SE 64GB', marca: 'Apple', modelo: 'SE Branco', cor: 'Branco', imei: '35921100112349', categoria: 'americano',
+    history: ['29/07 - Contagem manhã - Presente', '29/07 - Fechamento - Continua na loja'] },
+];
+
+class Component extends DCLogic {
+  state = {
+    screen: 'splash', loginEmail: '', loginSenha: '', loginError: false,
+    tab: 'lista', search: '', catFilter: 'todos', detailId: null,
+    morningStatus: {}, morningOutro: {}, morningExpandedId: null,
+    morningFinalized: false, morningFinalizedAt: null, morningConfirmStep: 0, morningPhotos: 0,
+    finalStatus: {}, finalOutro: {}, finalExpandedId: null, extraDevices: [],
+    fechamentoFinalized: false, fechamentoFinalizedAt: null, fechamentoConfirmStep: 0, fechamentoPhotos: 0,
+    addDeviceOpen: false, newNome: '', newMarca: '', newModelo: '', newCat: 'lacrado', newDeviceSeq: 0,
+    resumoScenario: 'ok',
+  };
+
+  allDevices() { return DEVICES.concat(this.state.extraDevices); }
+
+  matchesSearch(d, q) {
+    if (!q) return true;
+    q = q.toLowerCase();
+    return d.nome.toLowerCase().includes(q) || d.marca.toLowerCase().includes(q) ||
+      d.modelo.toLowerCase().includes(q) || (d.imei || '').includes(q);
+  }
+
+  buildSections(devices, statusMap, outroMap, expandedId, locked, setStatus, setOutro, setExpanded) {
+    return ['lacrado', 'seminovo', 'americano'].map(cat => {
+      const devs = devices.filter(d => d.categoria === cat);
+      const answered = devs.filter(d => statusMap[d.id]).length;
+      return {
+        label: CAT[cat].label + 's', countLabel: `${answered}/${devs.length}`,
+        devices: devs.map(d => {
+          const activeKey = statusMap[d.id];
+          const hasStatus = !!activeKey;
+          return {
+            ...d, cursor: locked ? 'default' : 'pointer',
+            hasStatus, statusLabel: hasStatus ? STATUS_LABELS[activeKey] : '',
+            checkBorder: hasStatus ? '#111111' : 'rgba(17,17,17,0.2)', checkBg: hasStatus ? '#111111' : '#FFFFFF',
+            expanded: expandedId === d.id,
+            onToggleExpand: () => { if (!locked) setExpanded(expandedId === d.id ? null : d.id); },
+            showOutro: activeKey === 'outro', outroValue: (outroMap[d.id] || ''),
+            onOutroChange: (e) => setOutro(d.id, e.target.value),
+            statusOptions: STATUS_KEYS.map(k => {
+              const active = activeKey === k;
+              return {
+                key: k, label: STATUS_LABELS[k],
+                color: active ? '#F6C500' : '#111111', bg: active ? '#111111' : '#FFFFFF',
+                borderColor: active ? '#111111' : 'rgba(17,17,17,0.15)',
+                onClick: () => { if (!locked) { setStatus(d.id, k); setExpanded(null); } },
+              };
+            }),
+          };
+        }),
+      };
+    });
+  }
+
+  buildChips(devices, statusMap) {
+    return ['lacrado', 'seminovo', 'americano'].map(cat => {
+      const devs = devices.filter(d => d.categoria === cat);
+      const c = devs.filter(d => statusMap[d.id]).length;
+      return { label: `${CAT[cat].label}s ${c}/${devs.length}`, color: '#111111', bg: 'rgba(17,17,17,0.06)' };
+    }).concat([{ label: `Total ${devices.filter(d => statusMap[d.id]).length}/${devices.length}`, color: '#F6C500', bg: '#111111' }]);
+  }
+
+  renderVals() {
+    const s = this.state;
+    const all = this.allDevices();
+
+    const catChips = [
+      { key: 'todos', label: 'Todos' },
+      { key: 'lacrado', label: 'Lacrados' },
+      { key: 'seminovo', label: 'Seminovos' },
+      { key: 'americano', label: 'Americanos' },
+    ].map(c => {
+      const count = c.key === 'todos' ? all.length : all.filter(d => d.categoria === c.key).length;
+      const active = s.catFilter === c.key;
+      return {
+        label: c.label, count,
+        color: active ? '#F6C500' : '#111111',
+        bg: active ? '#111111' : '#FFFFFF',
+        borderColor: active ? '#111111' : 'rgba(17,17,17,0.15)',
+        onClick: () => this.setState({ catFilter: c.key }),
+      };
+    });
+
+    const filteredDevices = all
+      .filter(d => (s.catFilter === 'todos' || d.categoria === s.catFilter) && this.matchesSearch(d, s.search))
+      .map(d => ({
+        ...d, initials: d.nome.slice(0, 2).toUpperCase(),
+        tagColor: CAT[d.categoria].color, tagBg: CAT[d.categoria].bg, tagBorder: CAT[d.categoria].border, tagLabel: CAT[d.categoria].label,
+        onOpen: () => this.setState({ detailId: d.id }),
+      }));
+
+    const detail = s.detailId ? all.find(d => d.id === s.detailId) : null;
+
+    const manhaSections = this.buildSections(
+      DEVICES, s.morningStatus, s.morningOutro, s.morningExpandedId, s.morningFinalized,
+      (id, k) => this.setState(st => ({ morningStatus: { ...st.morningStatus, [id]: k } })),
+      (id, v) => this.setState(st => ({ morningOutro: { ...st.morningOutro, [id]: v } })),
+      (id) => this.setState({ morningExpandedId: id }),
+    );
+    const manhaChips = this.buildChips(DEVICES, s.morningStatus);
+
+    const fechamentoSections = this.buildSections(
+      all, s.finalStatus, s.finalOutro, s.finalExpandedId, s.fechamentoFinalized,
+      (id, k) => this.setState(st => ({ finalStatus: { ...st.finalStatus, [id]: k } })),
+      (id, v) => this.setState(st => ({ finalOutro: { ...st.finalOutro, [id]: v } })),
+      (id) => this.setState({ finalExpandedId: id }),
+    );
+    const fechamentoChips = this.buildChips(all, s.finalStatus);
+
+    const scenarios = {
+      ok: { final: { lacrado: 4, americano: 3, seminovo: 4, total: 11 }, isDiv: false, list: [] },
+      div: { final: { lacrado: 4, americano: 3, seminovo: 3, total: 10 }, isDiv: true, list: ['iPhone 11 128GB Verde (Seminovo) — não localizado na Contagem Final'] },
+    };
+    const sc = s.resumoScenario === 'div' ? scenarios.div : scenarios.ok;
+
+    return {
+      isSplash: s.screen === 'splash', isLogin: s.screen === 'login', isApp: s.screen === 'app',
+      goToLogin: () => this.setState({ screen: 'login' }),
+      loginEmail: s.loginEmail, loginSenha: s.loginSenha, loginError: s.loginError,
+      onLoginEmailChange: (e) => this.setState({ loginEmail: e.target.value }),
+      onLoginSenhaChange: (e) => this.setState({ loginSenha: e.target.value }),
+      submitLogin: () => {
+        if (!s.loginEmail.trim() || !s.loginSenha.trim()) this.setState({ loginError: true });
+        else this.setState({ screen: 'app', loginError: false });
+      },
+      isLista: s.tab === 'lista', isManha: s.tab === 'manha', isFechamento: s.tab === 'fechamento', isResumo: s.tab === 'resumo',
+      goLista: () => this.setState({ tab: 'lista' }), goManha: () => this.setState({ tab: 'manha' }),
+      goFechamento: () => this.setState({ tab: 'fechamento' }), goResumo: () => this.setState({ tab: 'resumo' }),
+      tabColorLista: s.tab === 'lista' ? '#111111' : 'rgba(17,17,17,0.35)', tabColorManha: s.tab === 'manha' ? '#111111' : 'rgba(17,17,17,0.35)',
+      tabColorFechamento: s.tab === 'fechamento' ? '#111111' : 'rgba(17,17,17,0.35)', tabColorResumo: s.tab === 'resumo' ? '#111111' : 'rgba(17,17,17,0.35)',
+
+      totalCount: all.length, search: s.search, onSearchChange: (e) => this.setState({ search: e.target.value }),
+      catChips, filteredDevices, noResults: filteredDevices.length === 0,
+
+      todayLabel: '30/07/2026 · Loja Centro', responsavel: 'Ana Souza',
+      morningRefLabel: s.morningFinalized ? `Base: Primeira Contagem de hoje às ${s.morningFinalizedAt} · somente leitura` : 'Primeira Contagem ainda não finalizada',
+      manhaChips, manhaSections, manhaFinalized: s.morningFinalized, manhaNotFinalized: !s.morningFinalized, manhaFinalizedAt: s.morningFinalizedAt,
+      manhaPhotos: s.morningPhotos, manhaPhotosPlural: s.morningPhotos === 1 ? '' : 's',
+      addManhaPhoto: () => this.setState(st => ({ morningPhotos: st.morningPhotos + 1 })),
+      manhaConfirmOpen: () => this.setState({ morningConfirmStep: 1 }),
+      manhaConfirmStep: s.morningConfirmStep,
+      manhaConfirmTitle: s.morningConfirmStep === 1 ? 'Finalizar contagem?' : 'Tem certeza?',
+      manhaConfirmBody: s.morningConfirmStep === 1 ? 'Você marcou a situação dos aparelhos na loja hoje.' : 'Essa ação não poderá ser editada depois.',
+      manhaConfirmActionLabel: s.morningConfirmStep === 1 ? 'Continuar' : 'Confirmar',
+      manhaConfirmCancel: () => this.setState({ morningConfirmStep: 0 }),
+      manhaConfirmNext: () => {
+        if (s.morningConfirmStep === 1) this.setState({ morningConfirmStep: 2 });
+        else this.setState({ morningFinalized: true, morningFinalizedAt: '08:03', morningConfirmStep: 0 });
+      },
+
+      fechamentoFinalized: s.fechamentoFinalized, fechamentoNotFinalized: !s.fechamentoFinalized, fechamentoFinalizedAt: s.fechamentoFinalizedAt,
+      fechamentoSections, fechamentoChips, fechamentoPhotos: s.fechamentoPhotos, fechamentoPhotosPlural: s.fechamentoPhotos === 1 ? '' : 's',
+      addFechamentoPhoto: () => this.setState(st => ({ fechamentoPhotos: st.fechamentoPhotos + 1 })),
+      fechamentoConfirmOpen: () => this.setState({ fechamentoConfirmStep: 1 }),
+      fechamentoConfirmStep: s.fechamentoConfirmStep,
+      fechamentoConfirmTitle: s.fechamentoConfirmStep === 1 ? 'Finalizar contagem?' : 'Tem certeza?',
+      fechamentoConfirmBody: s.fechamentoConfirmStep === 1 ? 'Você registrou o status de cada aparelho do dia.' : 'Essa ação não poderá ser editada depois.',
+      fechamentoConfirmActionLabel: s.fechamentoConfirmStep === 1 ? 'Continuar' : 'Confirmar',
+      fechamentoConfirmCancel: () => this.setState({ fechamentoConfirmStep: 0 }),
+      fechamentoConfirmNext: () => {
+        if (s.fechamentoConfirmStep === 1) this.setState({ fechamentoConfirmStep: 2 });
+        else this.setState({ fechamentoFinalized: true, fechamentoFinalizedAt: '19:12', fechamentoConfirmStep: 0 });
+      },
+
+      openAddDevice: () => this.setState(st => ({ addDeviceOpen: true, newDeviceSeq: st.newDeviceSeq + 1 })),
+      newPhotoSlotId: `add-device-photo-${s.newDeviceSeq}`,
+      closeAddDevice: () => this.setState({ addDeviceOpen: false, newNome: '', newMarca: '', newModelo: '', newCat: 'lacrado' }),
+      addDeviceOpen: s.addDeviceOpen, newNome: s.newNome, newMarca: s.newMarca, newModelo: s.newModelo,
+      onNewNomeChange: (e) => this.setState({ newNome: e.target.value }),
+      onNewMarcaChange: (e) => this.setState({ newMarca: e.target.value }),
+      onNewModeloChange: (e) => this.setState({ newModelo: e.target.value }),
+      newCatOptions: ['lacrado', 'seminovo', 'americano'].map(k => {
+        const active = s.newCat === k;
+        return {
+          key: k, label: CAT[k].label,
+          color: active ? CAT[k].color : '#111111', bg: active ? CAT[k].bg : '#FFFFFF',
+          borderColor: active ? CAT[k].border : 'rgba(17,17,17,0.15)',
+          onClick: () => this.setState({ newCat: k }),
+        };
+      }),
+      submitAddDevice: () => {
+        if (!s.newNome.trim()) return;
+        const id = 'extra-' + Date.now();
+        this.setState(st => ({
+          extraDevices: st.extraDevices.concat([{ id, nome: st.newNome, marca: st.newMarca || '—', modelo: st.newModelo || '—', cor: '', imei: '', categoria: st.newCat, history: ['30/07 - Cadastrado na Lista de Aparelhos'] }]),
+          addDeviceOpen: false, newNome: '', newMarca: '', newModelo: '', newCat: 'lacrado',
+        }));
+      },
+
+      detailOpen: !!detail, closeDetail: () => this.setState({ detailId: null }), stop: (e) => e.stopPropagation(),
+      detailNome: detail ? detail.nome : '', detailInitials: detail ? detail.nome.slice(0, 2).toUpperCase() : '',
+      detailTagColor: detail ? CAT[detail.categoria].color : '#111111', detailTagBg: detail ? CAT[detail.categoria].bg : '#fff',
+      detailTagBorder: detail ? CAT[detail.categoria].border : '#111111',
+      detailTagLabel: detail ? CAT[detail.categoria].label : '',
+      detailFields: detail ? [
+        { label: 'Marca', value: detail.marca }, { label: 'Modelo', value: detail.modelo },
+        { label: 'Cor', value: detail.cor || '—' }, { label: 'IMEI', value: detail.imei || '—' },
+      ] : [],
+      detailHistory: detail ? detail.history : [],
+
+      scenarioOkBg: s.resumoScenario === 'ok' ? '#111111' : 'transparent', scenarioOkColor: s.resumoScenario === 'ok' ? '#F6C500' : 'rgba(17,17,17,0.55)',
+      scenarioDivBg: s.resumoScenario === 'div' ? '#111111' : 'transparent', scenarioDivColor: s.resumoScenario === 'div' ? '#F6C500' : 'rgba(17,17,17,0.55)',
+      setScenarioOk: () => this.setState({ resumoScenario: 'ok' }), setScenarioDiv: () => this.setState({ resumoScenario: 'div' }),
+      resumoPrimeira: [
+        { label: 'Lacrados', value: 4 }, { label: 'Americanos', value: 4 }, { label: 'Seminovos', value: 4 }, { label: 'Total', value: 12 },
+      ],
+      resumoMovs: [
+        { label: 'Vendidos', value: 1 }, { label: 'Transferidos', value: 1 }, { label: 'Recebidos (entrada)', value: 1 },
+        { label: 'Assistência', value: 0 }, { label: 'Troca', value: 0 }, { label: 'Saiu', value: 0 }, { label: 'Outro', value: 0 },
+      ],
+      resumoEsperado: 11,
+      resumoFinal: [
+        { label: 'Lacrados', value: sc.final.lacrado }, { label: 'Americanos', value: sc.final.americano },
+        { label: 'Seminovos', value: sc.final.seminovo }, { label: 'Total', value: sc.final.total },
+      ],
+      isDivergence: sc.isDiv, divergenceList: sc.list,
+      statusBg: sc.isDiv ? '#F6C500' : '#111111', statusColor: sc.isDiv ? '#111111' : '#F6C500',
+      statusHeadline: sc.isDiv ? `⚠️ Divergência encontrada: ${11 - sc.final.total} aparelho a menos` : '✅ Tudo correto (Total Esperado = Contagem Final)',
+    };
+  }
+}
+
+</script>
+</body>
+</html>

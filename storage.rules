@@ -1,0 +1,11 @@
+rules_version = '2';
+
+// Deny-all: uploads/downloads de foto passam sempre pela API Nest
+// (multipart -> compressão -> Admin SDK), nunca direto do cliente.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

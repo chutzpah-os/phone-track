@@ -1,0 +1,17 @@
+{
+  "name": "phone-track",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "overrides": {
+    "zod": "3.25.76"
+  },
+  "scripts": {
+    "dev:api": "npm run start:dev --workspace apps/api",
+    "dev:web": "npm run dev --workspace apps/web",
+    "build": "npm run build --workspace packages/shared && npm run build --workspace apps/api && npm run build --workspace apps/web",
+    "emulators": "firebase emulators:start --import=.emulator-data --export-on-exit=.emulator-data"
+  }
+}
