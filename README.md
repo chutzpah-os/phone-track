@@ -13,6 +13,31 @@ Ver [prd.md](prd.md) para a especificação funcional e o design original, e [AR
 
 O Next.js só fala com a API Nest (exceto login, que usa o SDK client do Firebase Auth diretamente); toda regra de negócio, RBAC e auditoria fica centralizada no backend.
 
+## Capturas de tela
+
+<table>
+<tr>
+<td align="center"><img src="docs/screenshots/login.png" width="260"><br>Login</td>
+<td align="center"><img src="docs/screenshots/lista-aparelhos.png" width="260"><br>Lista de aparelhos</td>
+</tr>
+<tr>
+<td align="center"><img src="docs/screenshots/adicionar-aparelho.png" width="260"><br>Adicionar aparelho</td>
+<td align="center"><img src="docs/screenshots/ficha-aparelho.png" width="260"><br>Ficha do aparelho (editar/excluir e histórico)</td>
+</tr>
+<tr>
+<td align="center"><img src="docs/screenshots/primeira-contagem.png" width="260"><br>Primeira Contagem</td>
+<td align="center"><img src="docs/screenshots/contagem-final.png" width="260"><br>Contagem Final</td>
+</tr>
+<tr>
+<td align="center"><img src="docs/screenshots/resumo-do-dia.png" width="260"><br>Resumo do Dia</td>
+<td align="center"><img src="docs/screenshots/analise-auditoria.png" width="260"><br>Análise — log de auditoria</td>
+</tr>
+<tr>
+<td align="center"><img src="docs/screenshots/analise-historico-contagens.png" width="260"><br>Análise — histórico de contagens por data</td>
+<td align="center"><img src="docs/screenshots/analise-detalhe-log.png" width="260"><br>Análise — detalhe de um evento do log</td>
+</tr>
+</table>
+
 ## Estrutura
 
 ```
