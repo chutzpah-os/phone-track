@@ -87,7 +87,7 @@ export default function ResumoDoDiaPage() {
     <main className="flex flex-col gap-5 px-5 py-5">
       <div>
         <h1 className="text-[24px] font-extrabold">Resumo do Dia</h1>
-        <p className="text-sm text-fg-muted">{formatarDataBR(resumo.data)} · Loja Centro</p>
+        <p className="text-sm text-fg-muted">{formatarDataBR(resumo.data)}</p>
       </div>
 
       <section className="flex flex-col gap-2">

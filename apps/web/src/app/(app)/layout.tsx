@@ -3,10 +3,12 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth-context";
+import { useLojaAtual } from "@/hooks/use-loja-atual";
 import { BottomNav } from "@/components/ui/BottomNav";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { firebaseUser, perfil, carregando, logout } = useAuth();
+  const { loja } = useLojaAtual();
   const router = useRouter();
 
   useEffect(() => {
@@ -36,12 +38,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             </p>
           )}
         </div>
-        <button
-          onClick={() => logout()}
-          className="rounded-pill border-[1.5px] border-fg px-3 py-1.5 text-xs font-bold"
-        >
-          Sair
-        </button>
+        <div className="flex items-center gap-3">
+          {loja && <p className="text-xs font-semibold text-fg-muted">{loja.nome}</p>}
+          <button
+            onClick={() => logout()}
+            className="rounded-pill border-[1.5px] border-fg px-3 py-1.5 text-xs font-bold"
+          >
+            Sair
+          </button>
+        </div>
       </header>
       <div className="flex-1 pb-4">{children}</div>
       <BottomNav />

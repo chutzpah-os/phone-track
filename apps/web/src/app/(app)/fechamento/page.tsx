@@ -25,7 +25,7 @@ export default function ContagemFinalPage() {
     <main className="flex flex-col gap-6 px-5 py-5">
       <div>
         <h1 className="text-[24px] font-extrabold">Contagem Final</h1>
-        <p className="text-sm text-fg-muted">{status?.data && formatarDataBR(status.data)} · Loja Centro</p>
+        <p className="text-sm text-fg-muted">{status?.data && formatarDataBR(status.data)}</p>
       </div>
 
       {pendenciasFinal.map((pendencia) => (
