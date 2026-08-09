@@ -2,6 +2,7 @@ import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { FirebaseAuthGuard } from '../../common/guards/firebase-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { LojaAccessGuard } from '../../common/guards/loja-access.guard';
+import { dataLocalISO } from '../../common/utils/data';
 import { ResumoService } from './resumo.service';
 
 @Controller('lojas/:lojaId/relatorios')
@@ -15,8 +16,8 @@ export class ResumoController {
     @Query('de') de?: string,
     @Query('ate') ate?: string,
   ) {
-    const hoje = new Date().toISOString().slice(0, 10);
-    const trintaDiasAtras = new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10);
+    const hoje = dataLocalISO();
+    const trintaDiasAtras = dataLocalISO(new Date(Date.now() - 30 * 86400000));
     return this.resumoService.listar(lojaId, de ?? trintaDiasAtras, ate ?? hoje);
   }
 

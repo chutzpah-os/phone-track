@@ -5,11 +5,7 @@ import type { CountRecord } from "@phonetrack/shared";
 import { PrimeiraChecklistSection } from "@/components/contagens/PrimeiraChecklistSection";
 import { FinalChecklistSection } from "@/components/contagens/FinalChecklistSection";
 import { useContagemPorData } from "@/hooks/use-contagens";
-
-function formatarDataBR(iso: string): string {
-  const [ano, mes, dia] = iso.split("-");
-  return `${dia}/${mes}/${ano}`;
-}
+import { formatarDataBR } from "@/lib/format";
 
 function formatarHorario(iso: string): string {
   return new Date(iso).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });

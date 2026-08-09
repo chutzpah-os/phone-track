@@ -3,6 +3,7 @@
 import type { CountRecord } from "@phonetrack/shared";
 import { Button } from "@/components/ui/Button";
 import { useDesbloquearPendencia } from "@/hooks/use-contagens";
+import { formatarDataBR } from "@/lib/format";
 
 export function PendenciaBanner({
   lojaId,
@@ -18,7 +19,7 @@ export function PendenciaBanner({
   return (
     <div className="rounded-md border-[1.5px] border-fg bg-surface-soft px-4 py-3 text-sm">
       <p>
-        ⚠ Existe uma contagem pendente de {pendencia.data}. Resolva antes de continuar.
+        ⚠ Existe uma contagem pendente de {formatarDataBR(pendencia.data)}. Resolva antes de continuar.
       </p>
       {podeDesbloquear ? (
         <Button

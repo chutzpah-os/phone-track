@@ -9,6 +9,7 @@ import { EditDeviceModal } from "@/components/aparelhos/EditDeviceModal";
 import { useAuth } from "@/context/auth-context";
 import { useAparelho, useExcluirAparelho } from "@/hooks/use-aparelhos";
 import { LABEL_ORIGEM, LABEL_STATUS } from "@/lib/labels";
+import { formatarDataBR } from "@/lib/format";
 
 export function DeviceDetailSheet({
   aparelhoId,
@@ -89,7 +90,7 @@ export function DeviceDetailSheet({
                   key={i}
                   className="rounded-md border border-border bg-surface-soft px-3 py-2 text-sm"
                 >
-                  <span className="font-semibold">{item.data}</span> — {LABEL_ORIGEM[item.origem]} ·{" "}
+                  <span className="font-semibold">{formatarDataBR(item.data)}</span> — {LABEL_ORIGEM[item.origem]} ·{" "}
                   {LABEL_STATUS[item.status] ?? item.status}
                   {item.actorNome && <span className="text-fg-muted"> · {item.actorNome}</span>}
                   {item.observacao && (

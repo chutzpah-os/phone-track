@@ -4,6 +4,7 @@ import { FieldValue } from 'firebase-admin/firestore';
 import type { CountRecord } from '@phonetrack/shared';
 import { FIRESTORE } from '../../firebase/firebase.module';
 import type { AuthenticatedUser } from '../../common/types/auth-user.type';
+import { dataLocalISO } from '../../common/utils/data';
 
 const COLECAO = 'countRecords';
 
@@ -39,7 +40,7 @@ export class PendenciaService {
 
   /** Todas as pendências (bloqueantes ou já desbloqueadas, mas não resolvidas). */
   async listar(lojaId: string): Promise<CountRecord[]> {
-    return this.buscarCandidatas(lojaId, new Date().toISOString().slice(0, 10));
+    return this.buscarCandidatas(lojaId, dataLocalISO());
   }
 
   async desbloquear(lojaId: string, recordId: string, actor: AuthenticatedUser): Promise<CountRecord> {

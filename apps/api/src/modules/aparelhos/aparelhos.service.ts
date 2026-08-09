@@ -11,6 +11,7 @@ import type {
 } from '@phonetrack/shared';
 import { FIRESTORE } from '../../firebase/firebase.module';
 import type { AuthenticatedUser } from '../../common/types/auth-user.type';
+import { dataLocalISO } from '../../common/utils/data';
 import { AuditoriaService } from '../auditoria/auditoria.service';
 
 const COLECAO = 'aparelhos';
@@ -124,9 +125,9 @@ export class AparelhosService {
   private paraDataISO(valor: unknown): string {
     const timestamp = valor as FirebaseFirestore.Timestamp | undefined;
     if (timestamp && typeof timestamp.toDate === 'function') {
-      return timestamp.toDate().toISOString().slice(0, 10);
+      return dataLocalISO(timestamp.toDate());
     }
-    return new Date().toISOString().slice(0, 10);
+    return dataLocalISO();
   }
 
   private garantirAcessoLoja(actor: AuthenticatedUser, lojaId: string) {

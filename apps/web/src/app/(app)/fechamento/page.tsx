@@ -6,6 +6,7 @@ import { FinalChecklistSection } from "@/components/contagens/FinalChecklistSect
 import { useAuth } from "@/context/auth-context";
 import { useLojaAtual } from "@/hooks/use-loja-atual";
 import { useAbrirFinal, useContagemStatus } from "@/hooks/use-contagens";
+import { formatarDataBR } from "@/lib/format";
 
 export default function ContagemFinalPage() {
   const { perfil } = useAuth();
@@ -24,13 +25,13 @@ export default function ContagemFinalPage() {
     <main className="flex flex-col gap-6 px-5 py-5">
       <div>
         <h1 className="text-[24px] font-extrabold">Contagem Final</h1>
-        <p className="text-sm text-fg-muted">{status?.data} · Loja Centro</p>
+        <p className="text-sm text-fg-muted">{status?.data && formatarDataBR(status.data)} · Loja Centro</p>
       </div>
 
       {pendenciasFinal.map((pendencia) => (
         <div key={pendencia.id} className="flex flex-col gap-3 border-b border-border pb-6">
           <p className="text-xs font-bold uppercase tracking-wide text-fg-muted">
-            Pendência de {pendencia.data}
+            Pendência de {formatarDataBR(pendencia.data)}
           </p>
           {!pendencia.pendencia?.desbloqueadaEm ? (
             <PendenciaBanner lojaId={lojaId} pendencia={pendencia} podeDesbloquear={podeDesbloquear} />
