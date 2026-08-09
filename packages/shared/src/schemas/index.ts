@@ -1,9 +1,10 @@
 import { z } from 'zod';
-import { CATEGORIAS, PAPEIS, STATUS_CONTAGEM_FINAL } from '../constants';
+import { CATEGORIAS, PAPEIS, STATUS_CONTAGEM_FINAL, STATUS_PRIMEIRA_CONTAGEM } from '../constants';
 
 export const categoriaSchema = z.enum(CATEGORIAS);
 export const papelSchema = z.enum(PAPEIS);
 export const statusContagemFinalSchema = z.enum(STATUS_CONTAGEM_FINAL);
+export const statusPrimeiraContagemSchema = z.enum(STATUS_PRIMEIRA_CONTAGEM);
 
 export const criarAparelhoSchema = z.object({
   nome: z.string().min(1),
@@ -36,7 +37,7 @@ export type CriarLojaInput = z.infer<typeof criarLojaSchema>;
 
 export const marcarItemContagemSchema = z
   .object({
-    status: statusContagemFinalSchema,
+    status: z.union([statusContagemFinalSchema, statusPrimeiraContagemSchema]),
     observacao: z.string().optional(),
   })
   .refine((data) => data.status !== 'outro' || !!data.observacao?.trim(), {

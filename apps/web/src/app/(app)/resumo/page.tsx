@@ -2,6 +2,7 @@
 
 import type { Categoria } from "@phonetrack/shared";
 import { LABEL_STATUS } from "@/lib/labels";
+import { formatarDataBR } from "@/lib/format";
 import { useLojaAtual } from "@/hooks/use-loja-atual";
 import { useContagemStatus } from "@/hooks/use-contagens";
 import { useResumoDoDia } from "@/hooks/use-resumo";
@@ -20,6 +21,15 @@ const ORDEM_MOVIMENTACOES = [
   "troca",
   "saiu",
   "continua",
+  "outro",
+] as const;
+
+const ORDEM_MOVIMENTACOES_MANHA = [
+  "vendido",
+  "transferido",
+  "saiu",
+  "assistencia",
+  "troca",
   "outro",
 ] as const;
 
@@ -77,7 +87,7 @@ export default function ResumoDoDiaPage() {
     <main className="flex flex-col gap-5 px-5 py-5">
       <div>
         <h1 className="text-[24px] font-extrabold">Resumo do Dia</h1>
-        <p className="text-sm text-fg-muted">{resumo.data} · Loja Centro</p>
+        <p className="text-sm text-fg-muted">{formatarDataBR(resumo.data)} · Loja Centro</p>
       </div>
 
       <section className="flex flex-col gap-2">
@@ -89,7 +99,27 @@ export default function ResumoDoDiaPage() {
 
       <section className="flex flex-col gap-2">
         <p className="text-xs font-bold uppercase tracking-wide text-fg-muted">
-          Movimentações do dia
+          Movimentações da manhã
+        </p>
+        <p className="text-xs text-fg-muted">Aparelhos não encontrados já na Primeira Contagem</p>
+        <div className="flex flex-col gap-1 rounded-md border border-border px-3 py-2 text-sm">
+          {ORDEM_MOVIMENTACOES_MANHA.map((status) => (
+            <div key={status} className="flex justify-between border-b border-border/50 py-1 last:border-0">
+              <span className="text-fg-muted">{LABEL_STATUS[status]}</span>
+              <span className="font-semibold">{resumo.movimentacoesManha[status]}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <div className="rounded-md bg-surface-soft px-4 py-3">
+        <p className="text-lg font-extrabold">Total Esperado: {resumo.totalEsperado}</p>
+        <p className="text-xs text-fg-muted">Primeira Contagem − Saídas + Entradas</p>
+      </div>
+
+      <section className="flex flex-col gap-2">
+        <p className="text-xs font-bold uppercase tracking-wide text-fg-muted">
+          Movimentações do fechamento
         </p>
         <div className="flex flex-col gap-1 rounded-md border border-border px-3 py-2 text-sm">
           {ORDEM_MOVIMENTACOES.map((status) => (
@@ -100,11 +130,6 @@ export default function ResumoDoDiaPage() {
           ))}
         </div>
       </section>
-
-      <div className="rounded-md bg-surface-soft px-4 py-3">
-        <p className="text-lg font-extrabold">Total Esperado: {resumo.totalEsperado}</p>
-        <p className="text-xs text-fg-muted">Primeira Contagem − Saídas + Entradas</p>
-      </div>
 
       <section className="flex flex-col gap-2">
         <p className="text-xs font-bold uppercase tracking-wide text-fg-muted">Contagem Final</p>

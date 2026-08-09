@@ -7,7 +7,21 @@ export type Categoria = (typeof CATEGORIAS)[number];
 export const TIPOS_CONTAGEM = ['primeira', 'final'] as const;
 export type TipoContagem = (typeof TIPOS_CONTAGEM)[number];
 
-export const STATUS_PRIMEIRA_CONTAGEM = ['presente', 'nao_conferido'] as const;
+/**
+ * "presente" é o único caso feliz; os outros 6 são os mesmos motivos de saída
+ * que a Contagem Final usa — um aparelho não encontrado de manhã pode ter
+ * sido vendido/transferido/etc antes da loja abrir, então faz sentido
+ * registrar o motivo já na Primeira, não só na Final.
+ */
+export const STATUS_PRIMEIRA_CONTAGEM = [
+  'presente',
+  'vendido',
+  'transferido',
+  'saiu',
+  'assistencia',
+  'troca',
+  'outro',
+] as const;
 export type StatusPrimeiraContagem = (typeof STATUS_PRIMEIRA_CONTAGEM)[number];
 
 export const STATUS_CONTAGEM_FINAL = [

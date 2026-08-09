@@ -62,6 +62,19 @@ export class ResumoService {
 
     const primeiraContadores = contarPorCategoria(itensPrimeira, (i) => i.status === 'presente');
 
+    // Aparelhos não encontrados na Primeira já saem com um motivo (Vendido,
+    // Assistência, etc.) — contados aqui à parte das movimentações do
+    // Fechamento, mas usando o mesmo formato (Record<StatusContagemFinal,
+    // number>; "continua"/"entrada" nunca aparecem na Primeira, ficam em 0).
+    const movimentacoesManha = Object.fromEntries(
+      STATUS_CONTAGEM_FINAL.map((s) => [s, 0]),
+    ) as Record<StatusContagemFinal, number>;
+    for (const item of itensPrimeira) {
+      if (item.status && item.status !== 'presente') {
+        movimentacoesManha[item.status as StatusContagemFinal]++;
+      }
+    }
+
     const movimentacoes = Object.fromEntries(
       STATUS_CONTAGEM_FINAL.map((s) => [s, 0]),
     ) as Record<StatusContagemFinal, number>;
@@ -97,6 +110,7 @@ export class ResumoService {
       lojaId,
       data,
       primeiraContadores,
+      movimentacoesManha,
       movimentacoes,
       totalEsperado,
       finalContadores,

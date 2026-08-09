@@ -10,9 +10,15 @@ import type {
   MarcarItemContagemInput,
   StatusContagemFinal,
 } from '@phonetrack/shared';
-import { CATEGORIAS, STATUS_QUE_DESATIVAM_APARELHO } from '@phonetrack/shared';
+import {
+  CATEGORIAS,
+  STATUS_CONTAGEM_FINAL,
+  STATUS_PRIMEIRA_CONTAGEM,
+  STATUS_QUE_DESATIVAM_APARELHO,
+} from '@phonetrack/shared';
 import { FIRESTORE } from '../../firebase/firebase.module';
 import type { AuthenticatedUser } from '../../common/types/auth-user.type';
+import { dataLocalISO } from '../../common/utils/data';
 import { AparelhosService } from '../aparelhos/aparelhos.service';
 import { AuditoriaService } from '../auditoria/auditoria.service';
 import { ResumoService } from '../resumo/resumo.service';
@@ -39,7 +45,7 @@ export class ContagensService {
   ) {}
 
   hojeISO(): string {
-    return new Date().toISOString().slice(0, 10);
+    return dataLocalISO();
   }
 
   private idRegistro(lojaId: string, data: string, tipo: 'primeira' | 'final') {
@@ -145,7 +151,12 @@ export class ContagensService {
     const existente = await this.buscarRegistroOuNull(idFinal);
     if (existente) return existente;
 
-    const itensPrimeira = await this.listarItens(idPrimeira);
+    // Itens marcados com um motivo de saída na Primeira (Vendido/Transferido/
+    // Saiu/Assistência/Troca/Outro) não foram encontrados de manhã — não faz
+    // sentido pedir pra conferir de novo no Fechamento, então ficam fora da
+    // Final. Só quem foi confirmado "presente" segue pro Fechamento.
+    const itensPrimeiraTodos = await this.listarItens(idPrimeira);
+    const itensPrimeira = itensPrimeiraTodos.filter((item) => item.status === 'presente');
     const contadores = contadoresVazios();
     for (const item of itensPrimeira) {
       contadores.porCategoria[item.categoria].esperado++;
@@ -292,7 +303,14 @@ export class ContagensService {
     });
   }
 
-  async marcarStatusFinal(
+  /**
+   * Marca o status de um item tanto na Primeira quanto na Final — as duas
+   * contagens compartilham os motivos de saída (Vendido/Transferido/Saiu/
+   * Assistência/Troca/Outro); só a Final tem Continua/Entrada a mais. Validar
+   * aqui que o status pertence ao conjunto certo evita um item da Primeira
+   * ser marcado com um status que só faz sentido na Final (ou vice-versa).
+   */
+  async marcarStatusItem(
     lojaId: string,
     recordId: string,
     deviceId: string,
@@ -311,6 +329,14 @@ export class ContagensService {
       const registro = registroSnap.data() as CountRecord;
       if (registro.finalizada) {
         throw new ForbiddenException('Esta contagem já foi finalizada e não pode ser editada');
+      }
+
+      const statusValido =
+        registro.tipo === 'primeira'
+          ? (STATUS_PRIMEIRA_CONTAGEM as readonly string[]).includes(input.status)
+          : (STATUS_CONTAGEM_FINAL as readonly string[]).includes(input.status);
+      if (!statusValido) {
+        throw new ConflictException(`Status "${input.status}" não é válido para a contagem "${registro.tipo}"`);
       }
 
       const item = itemSnap.data() as CountItem;
@@ -341,7 +367,7 @@ export class ContagensService {
     // disparada como efeito colateral da marcação no fechamento. Se o staff
     // corrigir o status antes de finalizar, o aparelho volta a ficar ativo.
     const antesDesativava = statusAnterior && STATUS_QUE_DESATIVAM_APARELHO.includes(statusAnterior);
-    const agoraDesativa = STATUS_QUE_DESATIVAM_APARELHO.includes(input.status);
+    const agoraDesativa = STATUS_QUE_DESATIVAM_APARELHO.includes(input.status as StatusContagemFinal);
 
     if (agoraDesativa && !antesDesativava) {
       await this.aparelhosService.excluir(lojaId, deviceId, actor);

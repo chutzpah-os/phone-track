@@ -84,14 +84,14 @@ export class ContagensController {
   }
 
   @Patch(':recordId/itens/:deviceId/status')
-  marcarStatusFinal(
+  marcarStatusItem(
     @Param('lojaId') lojaId: string,
     @Param('recordId') recordId: string,
     @Param('deviceId') deviceId: string,
     @Body(new ZodValidationPipe(marcarItemContagemSchema)) body: never,
     @CurrentUser() actor: AuthenticatedUser,
   ) {
-    return this.contagensService.marcarStatusFinal(lojaId, recordId, deviceId, actor, body);
+    return this.contagensService.marcarStatusItem(lojaId, recordId, deviceId, actor, body);
   }
 
   @Post(':recordId/aparelhos')

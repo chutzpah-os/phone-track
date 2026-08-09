@@ -1,12 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { Categoria, CountItem, CountRecord } from "@phonetrack/shared";
+import type { Categoria, CountItem, CountRecord, StatusPrimeiraContagem } from "@phonetrack/shared";
 import { Button } from "@/components/ui/Button";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { ContagemCounters } from "@/components/contagens/ContagemCounters";
 import { ChecklistItemPrimeira } from "@/components/contagens/ChecklistItemPrimeira";
-import { useFinalizarContagem, useItensContagem, useMarcarPresenca } from "@/hooks/use-contagens";
+import {
+  useFinalizarContagem,
+  useItensContagem,
+  useMarcarPresenca,
+  useMarcarStatusItem,
+} from "@/hooks/use-contagens";
 
 const CATEGORIAS: { valor: Categoria; label: string }[] = [
   { valor: "lacrado", label: "Lacrados" },
@@ -23,8 +28,10 @@ export function PrimeiraChecklistSection({
 }) {
   const { data } = useItensContagem(lojaId, registro.id);
   const marcarPresenca = useMarcarPresenca(lojaId, registro.id);
+  const marcarStatus = useMarcarStatusItem(lojaId, registro.id);
   const finalizar = useFinalizarContagem(lojaId, registro.id);
   const [confirmando, setConfirmando] = useState(false);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const itensPorCategoria = useMemo(() => {
     const mapa: Record<Categoria, CountItem[]> = { lacrado: [], seminovo: [], americano: [] };
@@ -51,12 +58,26 @@ export function PrimeiraChecklistSection({
               key={item.deviceId}
               item={item}
               disabled={registro.finalizada}
+              expanded={expandedId === item.deviceId}
               onToggle={() =>
                 marcarPresenca.mutate({
                   deviceId: item.deviceId,
                   presente: item.status !== "presente",
                 })
               }
+              onToggleExpand={() =>
+                setExpandedId(expandedId === item.deviceId ? null : item.deviceId)
+              }
+              onSelecionarMotivo={(
+                status: Exclude<StatusPrimeiraContagem, "presente">,
+                observacao?: string,
+              ) => {
+                marcarStatus.mutate({
+                  deviceId: item.deviceId,
+                  input: { status, observacao },
+                });
+                setExpandedId(null);
+              }}
             />
           ))}
         </div>

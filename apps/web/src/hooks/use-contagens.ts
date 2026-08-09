@@ -84,7 +84,7 @@ export function useMarcarPresenca(lojaId: string | undefined, recordId: string |
   });
 }
 
-export function useMarcarStatusFinal(lojaId: string | undefined, recordId: string | undefined) {
+export function useMarcarStatusItem(lojaId: string | undefined, recordId: string | undefined) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ deviceId, input }: { deviceId: string; input: MarcarItemContagemInput }) =>

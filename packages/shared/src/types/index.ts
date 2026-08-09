@@ -131,6 +131,7 @@ export interface DailySummary {
   lojaId: string;
   data: string;
   primeiraContadores: ContadoresPorCategoria;
+  movimentacoesManha: Record<StatusContagemFinal, number>;
   movimentacoes: Record<StatusContagemFinal, number>;
   totalEsperado: number;
   finalContadores: ContadoresPorCategoria;

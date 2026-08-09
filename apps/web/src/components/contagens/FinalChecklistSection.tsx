@@ -7,7 +7,7 @@ import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { ContagemCounters } from "@/components/contagens/ContagemCounters";
 import { ChecklistItemFinal } from "@/components/contagens/ChecklistItemFinal";
 import { AddDeviceDuringCloseModal } from "@/components/contagens/AddDeviceDuringCloseModal";
-import { useFinalizarContagem, useItensContagem, useMarcarStatusFinal } from "@/hooks/use-contagens";
+import { useFinalizarContagem, useItensContagem, useMarcarStatusItem } from "@/hooks/use-contagens";
 
 const CATEGORIAS: { valor: Categoria; label: string }[] = [
   { valor: "lacrado", label: "Lacrados" },
@@ -25,7 +25,7 @@ export function FinalChecklistSection({
   permitirAdicionarAparelho: boolean;
 }) {
   const { data } = useItensContagem(lojaId, registro.id);
-  const marcarStatus = useMarcarStatusFinal(lojaId, registro.id);
+  const marcarStatus = useMarcarStatusItem(lojaId, registro.id);
   const finalizar = useFinalizarContagem(lojaId, registro.id);
   const [confirmando, setConfirmando] = useState(false);
   const [modalAparelhoAberto, setModalAparelhoAberto] = useState(false);
