@@ -1,6 +1,14 @@
 {
   "indexes": [
     {
+      "collectionGroup": "lojas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "ativo", "order": "ASCENDING" },
+        { "fieldPath": "nome", "order": "ASCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "aparelhos",
       "queryScope": "COLLECTION",
       "fields": [
