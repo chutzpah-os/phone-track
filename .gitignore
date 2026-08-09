@@ -57,3 +57,9 @@ Thumbs.db
 
 # Notas internas de progresso (não é pra público/GitHub)
 CLAUDE.md
+
+# Skills locais (Claude Code) e workspace do editor
+.agents/
+.claude/
+skills-lock.json
+*.code-workspace
