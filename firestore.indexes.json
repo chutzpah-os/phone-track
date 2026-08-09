@@ -45,6 +45,15 @@
       ]
     },
     {
+      "collectionGroup": "countRecords",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "finalizada", "order": "ASCENDING" },
+        { "fieldPath": "lojaId", "order": "ASCENDING" },
+        { "fieldPath": "data", "order": "ASCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "items",
       "queryScope": "COLLECTION_GROUP",
       "fields": [
