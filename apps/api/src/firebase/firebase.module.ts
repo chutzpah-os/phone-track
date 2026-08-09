@@ -18,8 +18,15 @@ export const FIREBASE_STORAGE_BUCKET = 'FIREBASE_STORAGE_BUCKET';
         if (admin.apps.length > 0) {
           return admin.app();
         }
+        // Em serverless (Vercel) não dá pra apontar GOOGLE_APPLICATION_CREDENTIALS
+        // pra um arquivo — a credencial vai como o JSON inteiro numa env var.
+        // Em outros ambientes (local, Render, Cloud Run) o application default
+        // continua funcionando normalmente (emulators, ADC, arquivo via env).
+        const credencialJson = config.get<string>('FIREBASE_SERVICE_ACCOUNT_JSON');
         return admin.initializeApp({
-          credential: admin.credential.applicationDefault(),
+          credential: credencialJson
+            ? admin.credential.cert(JSON.parse(credencialJson))
+            : admin.credential.applicationDefault(),
           projectId: config.get<string>('FIREBASE_PROJECT_ID'),
           storageBucket: config.get<string>('FIREBASE_STORAGE_BUCKET'),
         });
